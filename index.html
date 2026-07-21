@@ -439,64 +439,55 @@
     .ps-dot.check { background: #C8C4D8; color: #1C2B4A; }
 
     /* ── HOW IT WORKS ── */
-    .how { background: var(--white); }
+    .how { background: var(--bg); }
     .how-steps {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 0;
+      gap: 16px;
       margin-top: 56px;
       position: relative;
     }
-    @media (max-width: 680px) {
-      .how-steps { grid-template-columns: 1fr 1fr; gap: 32px 0; }
+    @media (max-width: 900px) {
+      .how-steps { grid-template-columns: 1fr 1fr; gap: 16px; }
+    }
+    @media (max-width: 480px) {
+      .how-steps { grid-template-columns: 1fr 1fr; gap: 12px; }
     }
     .how-step {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 0 20px;
+      align-items: flex-start;
+      text-align: left;
+      padding: 28px 24px 24px;
       position: relative;
-    }
-    .how-step:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      top: 28px;
-      right: -4px;
-      width: 50%;
-      height: 2px;
-      background: var(--border);
-      z-index: 0;
-    }
-    .how-step:not(:first-child)::before {
-      content: '';
-      position: absolute;
-      top: 28px;
-      left: -4px;
-      width: 50%;
-      height: 2px;
-      background: var(--border);
-      z-index: 0;
+      background: var(--white);
+      border-radius: 16px;
+      border: 1px solid var(--border);
     }
     .how-icon {
       width: 56px; height: 56px;
-      background: var(--coral);
-      border-radius: 50%;
+      background: #FEF0E7;
+      border-radius: 14px;
       display: flex; align-items: center; justify-content: center;
       margin-bottom: 20px;
-      position: relative;
-      z-index: 1;
       flex-shrink: 0;
     }
+    .how-icon svg { width: 28px; height: 28px; }
     .how-step-num {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 24px; height: 24px;
+      background: var(--coral);
       color: white;
-      font-size: 20px;
+      font-size: 12px;
       font-weight: 700;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
       line-height: 1;
     }
     .how-step h3 {
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 700;
       margin-bottom: 8px;
       color: var(--text);
     }
