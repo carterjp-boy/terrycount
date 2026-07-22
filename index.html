@@ -530,20 +530,36 @@
     .photo-demo-inner {
       max-width: 1100px;
       margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 64px;
+      align-items: center;
+    }
+    .photo-demo-left {
+      display: flex;
+      flex-direction: column;
     }
     .photo-demo-header {
-      text-align: center;
-      margin-bottom: 24px;
+      text-align: left;
+      margin-bottom: 40px;
     }
+    .photo-demo-header .section-sub { margin: 0 !important; }
     .photo-stats {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       gap: 40px;
       flex-wrap: wrap;
-      margin: 0 auto 64px;
+      margin: 0;
     }
     .photo-stat {
-      text-align: center;
+      text-align: left;
+    }
+    @media (max-width: 760px) {
+      .photo-demo-inner { grid-template-columns: 1fr; gap: 48px; }
+      .photo-demo-header { text-align: center; }
+      .photo-demo-header .section-sub { margin: 0 auto !important; }
+      .photo-stats { justify-content: center; }
+      .photo-stat { text-align: center; }
     }
     .photo-stat-num {
       font-size: 40px;
@@ -1098,28 +1114,30 @@
 <!-- PHOTO DEMO -->
 <section class="photo-demo">
   <div class="photo-demo-inner">
-    <div class="photo-demo-header">
-      <p class="section-label">See it in action</p>
-      <h2 class="section-title">One photo. Instant count.</h2>
-      <p class="section-sub" style="max-width:520px; margin: 0 auto;">No spreadsheet formulas. No manual tallying. TerryCount reads the shelf and logs everything for you.</p>
+    <div class="photo-demo-left">
+      <div class="photo-demo-header">
+        <p class="section-label">See it in action</p>
+        <h2 class="section-title">One photo. Instant count.</h2>
+        <p class="section-sub" style="max-width:520px;">No spreadsheet formulas. No manual tallying. TerryCount reads the shelf and logs everything for you.</p>
+      </div>
+
+      <div class="photo-stats">
+        <div class="photo-stat">
+          <div class="photo-stat-num">1</div>
+          <div class="photo-stat-label">photo per shelf</div>
+        </div>
+        <div class="photo-stat">
+          <div class="photo-stat-num">&lt;3s</div>
+          <div class="photo-stat-label">to full count</div>
+        </div>
+        <div class="photo-stat">
+          <div class="photo-stat-num">0</div>
+          <div class="photo-stat-label">manual entries</div>
+        </div>
+      </div>
     </div>
 
-    <div class="photo-stats">
-      <div class="photo-stat">
-        <div class="photo-stat-num">1</div>
-        <div class="photo-stat-label">photo per shelf</div>
-      </div>
-      <div class="photo-stat">
-        <div class="photo-stat-num">&lt;3s</div>
-        <div class="photo-stat-label">to full count</div>
-      </div>
-      <div class="photo-stat">
-        <div class="photo-stat-num">0</div>
-        <div class="photo-stat-label">manual entries</div>
-      </div>
-    </div>
-
-    <div class="photo-pair" style="justify-content:center;">
+    <div class="photo-pair" style="justify-content:flex-end;">
 
       <div class="phone-wrap-demo" style="align-items:center;">
         <div class="phone-frame-demo" style="width:280px;height:560px;">
