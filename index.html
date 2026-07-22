@@ -690,10 +690,17 @@
     }
 
     /* ── PRICING ── */
-    .pricing { background: #f5f0e8; text-align: center; }
+    .pricing { background: #f5f0e8; }
+    .pricing .container { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .pricing-left { display: flex; flex-direction: column; }
+    .pricing-left .section-label, .pricing-left .section-title, .pricing-left .section-sub { text-align: left; }
+    @media (max-width: 800px) {
+      .pricing .container { grid-template-columns: 1fr; gap: 40px; }
+      .pricing-left .section-label, .pricing-left .section-title, .pricing-left .section-sub { text-align: center; }
+    }
     .pricing-card {
       max-width: 440px;
-      margin: 56px auto 0;
+      margin: 0;
       background: var(--white);
       border: 2px solid var(--teal);
       border-radius: 20px;
@@ -1176,9 +1183,11 @@
 <!-- PRICING -->
 <section class="pricing" id="pricing">
   <div class="container">
-    <p class="section-label">Pricing</p>
-    <h2 class="section-title">Simple, flat-rate pricing</h2>
-    <p class="section-sub" style="margin: 0 auto;">One plan. One price. Your whole team covered.</p>
+    <div class="pricing-left">
+      <p class="section-label">Pricing</p>
+      <h2 class="section-title">Simple, flat-rate pricing</h2>
+      <p class="section-sub">One plan. One price. Your whole team covered.</p>
+    </div>
     <div class="pricing-card">
       <p class="pricing-name">Team Plan</p>
       <div class="pricing-amount"><sup>$</sup>30</div>
