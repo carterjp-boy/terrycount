@@ -946,7 +946,8 @@
       .hero-specs { justify-content: center; }
       .hero-ctas { justify-content: center; }
       .hero-right { justify-content: center; }
-      .tc-calc-inputs { justify-items: center; margin: 0 auto; }
+      /* Fields fill the column on mobile, matching the full-width card below them. */
+      .tc-calc-inputs { justify-items: stretch; margin: 0 auto; }
 
       /* Phone mockups */
       .hero-phones { gap: 10px; justify-content: center; }
@@ -1029,16 +1030,28 @@
       letter-spacing: -0.5px;
       line-height: 1.25;
       color: var(--text);
-      margin: 0 0 40px;
+      /* No bottom margin: the grid's row-gap below already provides the spacing. */
+      margin: 0;
     }
     .tc-hero-headline-b em { font-style: normal; color: var(--coral); }
 
+    /* Variant B hero sizes to its content like every other section, instead of
+       being stretched to the viewport height with the content floating in it. */
+    html.variant-b .hero { min-height: auto; }
+    html.variant-b .hero-inner { align-items: stretch; row-gap: 40px; padding: 96px 0; }
+
     /* Match the result card's height to the hero-left content column (variant B only). */
-    html.variant-b .hero-inner { align-items: stretch; }
     html.variant-b .hero-right { align-items: stretch; }
     html.variant-b .hero-left { justify-content: center; }
-    html.variant-b .tc-calc { align-self: stretch; }
-    html.variant-b .tc-calc-card { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+    html.variant-b .tc-calc { align-self: stretch; flex-direction: column; }
+    html.variant-b .tc-calc-card { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+    /* Let both columns fill their grid tracks so the hero spans the full content width. */
+    html.variant-b .tc-hero-subhead-b { max-width: none; }
+    html.variant-b .tc-calc-inputs { max-width: none; }
+    html.variant-b .tc-calc-stepper { width: 100%; }
+    html.variant-b .tc-calc-stepper .tc-calc-val { flex: 1; }
+    html.variant-b .tc-calc { max-width: none; }
 
     /* ── LINEN CALCULATOR ── */
     /* Inputs live in hero-left (in place of hero-ctas); result card lives in hero-right (in place of the phone mockups). */
@@ -1179,6 +1192,9 @@
 
     @media (max-width: 640px) {
       .tc-calc { max-width: 480px; margin: 0 auto; }
+      /* The hero's own mobile padding handles vertical rhythm here, so drop the
+         desktop-only 96px inner padding (must come after the desktop rule). */
+      html.variant-b .hero-inner { padding: 0; row-gap: 28px; }
     }
 
   </style>
