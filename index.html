@@ -1010,17 +1010,33 @@
     html.variant-b .hero-ctas { display: none; }
     html.variant-b .hero-badge { display: none; }
     html.variant-b .hero-specs { display: none; }
-    .tc-hero-copy-b { display: none; }
     html.variant-b .tc-hero-copy-a { display: none; }
-    html.variant-b .tc-hero-copy-b { display: block; }
+    .tc-hero-headline-b { display: none; }
+    html.variant-b .tc-hero-headline-b { display: block; }
+    .tc-hero-subhead-b { display: none; }
+    html.variant-b .tc-hero-subhead-b { display: block; }
     .tc-calc-inputs { display: none; }
     html.variant-b .tc-calc-inputs { display: grid; }
     .tc-calc { display: none; }
     html.variant-b .tc-calc { display: flex; }
 
+    /* Full-width headline above both columns (variant B only). */
+    .tc-hero-headline-b {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-size: clamp(22px, 2.6vw, 30px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.25;
+      color: var(--text);
+      margin: 0 0 40px;
+    }
+    .tc-hero-headline-b em { font-style: normal; color: var(--coral); }
+
     /* Match the result card's height to the hero-left content column (variant B only). */
     html.variant-b .hero-inner { align-items: stretch; }
     html.variant-b .hero-right { align-items: stretch; }
+    html.variant-b .hero-left { justify-content: center; }
     html.variant-b .tc-calc { align-self: stretch; }
     html.variant-b .tc-calc-card { height: 100%; display: flex; flex-direction: column; justify-content: center; }
 
@@ -1189,6 +1205,7 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
+    <h2 class="tc-hero-headline-b" id="tcHeroHeadlineB">How much are your linen closets <em>stealing</em> from you?</h2>
     <div class="hero-left">
       <div class="hero-badge">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
@@ -1198,10 +1215,7 @@
         <h1>Track your linens<br>in just <em>one snap.</em></h1>
         <p>Housekeepers take a photo. TerryCount's AI counts every item in seconds and populates your inventory spreadsheet automatically.</p>
       </div>
-      <div class="tc-hero-copy-b">
-        <h1>How much are your linen closets <em>stealing</em> from you?</h1>
-        <p>Tell us how your team counts linens today and we'll tally the real cost.</p>
-      </div>
+      <p class="tc-hero-subhead-b" id="tcHeroSubheadB">Tell us how your team counts linens today and we'll tally the real cost.</p>
       <div class="hero-ctas">
         <a href="https://tally.so/r/rjbaEp" target="_blank" class="btn-primary">Join the waitlist, it's free</a>
         <a href="#how-it-works" class="btn-secondary">See how it works</a>
