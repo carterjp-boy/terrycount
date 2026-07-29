@@ -5,8 +5,49 @@
   <!-- build: 2026-07-22c -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TerryCount: AI Linen Counting for Housekeeping Teams</title>
+  <meta name="description" content="TerryCount uses AI to count linens from a single photo and logs results straight to your spreadsheet. Built for hotel and hospitality housekeeping teams." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    // A/B test: variant "a" = original hero, variant "b" = calculator hero.
+    // Runs synchronously before paint so there's no flash of the wrong variant.
+    (function () {
+      function getCookie(name) {
+        var m = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+        return m ? decodeURIComponent(m[1]) : null;
+      }
+      function setCookie(name, value) {
+        document.cookie = name + '=' + value + '; path=/; max-age=15552000; SameSite=Lax';
+      }
+      var qsOverride = new URLSearchParams(location.search).get('tc_variant');
+      var isValidOverride = qsOverride === 'a' || qsOverride === 'b';
+      var cookieVariant = getCookie('tc_variant');
+      var variant = isValidOverride ? qsOverride : cookieVariant;
+      if (!variant) {
+        variant = Math.random() < 0.5 ? 'a' : 'b';
+      }
+      // Only persist the sticky assignment when it wasn't a one-off ?tc_variant= override,
+      // so a preview/QA link can never reassign a real visitor's bucket.
+      if (!isValidOverride && !cookieVariant) {
+        setCookie('tc_variant', variant);
+      }
+      window.tcVariant = variant;
+      document.documentElement.className += ' variant-' + variant;
+    })();
+  </script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-377J4TCCH0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    // Attaches to every event GA4 sends from this page, including the automatic
+    // page_view fired by the config call below, so variant is never missing.
+    gtag('set', { variant: window.tcVariant });
+    gtag('config', 'G-377J4TCCH0');
+  </script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -962,6 +1003,157 @@
     }
     .announcement-bar a:hover { opacity: 0.85; }
 
+    /* ── A/B VARIANT TOGGLE ── */
+    /* Both variants render server-side identical HTML; only display is switched. */
+    html.variant-b .hero-phones { display: none; }
+    .tc-calc { display: none; }
+    html.variant-b .tc-calc { display: flex; }
+
+    /* ── LINEN CALCULATOR (hero-right, variant B) ── */
+    .tc-calc {
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 420px;
+    }
+    .tc-calc-inputs { display: grid; gap: 12px; }
+    .tc-calc-field label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .tc-calc-stepper {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--white);
+      width: fit-content;
+    }
+    .tc-calc-stepper button {
+      width: 38px;
+      height: 40px;
+      border: none;
+      background: transparent;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+    .tc-calc-stepper button:hover { background: var(--teal-l); }
+    .tc-calc-stepper button:focus-visible { outline: 2px solid var(--coral); outline-offset: -2px; }
+    .tc-calc-stepper .tc-calc-val {
+      min-width: 96px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      border-left: 1.5px solid var(--border);
+      border-right: 1.5px solid var(--border);
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+    }
+
+    .tc-calc-card {
+      background: var(--teal);
+      border-radius: var(--radius);
+      padding: 28px 26px;
+      color: var(--white);
+    }
+    .tc-calc-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 14px;
+    }
+    .tc-calc-stat-row { display: flex; gap: 16px; margin-bottom: 20px; }
+    .tc-calc-stat { flex: 1; }
+    .tc-calc-stat .tc-calc-num {
+      font-weight: 700;
+      font-size: clamp(30px, 3.8vw, 42px);
+      color: var(--coral);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .tc-calc-stat .tc-calc-num .tc-calc-unit { font-size: 0.42em; font-weight: 700; margin-left: 2px; }
+    .tc-calc-stat .tc-calc-cap { font-size: 12.5px; color: rgba(255,255,255,0.75); margin-top: 6px; }
+
+    .tc-calc-bar-track { height: 16px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; margin-bottom: 9px; }
+    .tc-calc-bar-fill { height: 100%; border-radius: 999px; background: #5E769A; width: 100%; transition: width 0.6s cubic-bezier(.2,.8,.2,1); }
+    .tc-calc-bar-caption { display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,0.75); margin-bottom: 22px; }
+    .tc-calc-bar-caption span { transition: color 0.3s ease, opacity 0.3s ease; }
+    #tcBarRight { opacity: 0.55; }
+    .tc-calc-bar-caption.open #tcBarRight { opacity: 1; color: var(--white); font-weight: 600; }
+    .tc-calc-bar-caption.open #tcBarLeft { opacity: 0.55; }
+
+    .tc-calc-reveal-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.16);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 13px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .tc-calc-reveal-btn:hover { background: rgba(255,255,255,0.14); }
+    .tc-calc-reveal-btn:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
+    .tc-calc-reveal-btn.hidden { display: none; }
+
+    .tc-calc-savings { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.35s ease; }
+    .tc-calc-savings.open { max-height: 200px; opacity: 1; margin-top: 4px; }
+
+    .tc-calc-cta {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--coral);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      padding: 14px 18px;
+      border-radius: 10px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .tc-calc-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(224,112,56,0.32); }
+    .tc-calc-cta:focus-visible { outline: 2px solid var(--white); outline-offset: 2px; }
+
+    .tc-calc-reset-btn {
+      display: block;
+      margin: 12px auto 0;
+      background: none;
+      border: none;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.65);
+      cursor: pointer;
+      padding: 4px 8px;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .tc-calc-reset-btn:hover { color: var(--white); }
+    .tc-calc-reset-btn:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
+
+    @media (max-width: 640px) {
+      .tc-calc { max-width: 480px; margin: 0 auto; }
+    }
+
   </style>
 </head>
 <body>
@@ -1032,6 +1224,71 @@
           </div>
           <p class="hero-phone-label">After</p>
           <p class="hero-phone-blurb">Every item counted and logged to your spreadsheet</p>
+        </div>
+      </div>
+
+      <!-- CALCULATOR (variant B only, shown/hidden via CSS based on html.variant-a / html.variant-b) -->
+      <div class="tc-calc" id="tcCalc">
+        <div class="tc-calc-inputs">
+          <div class="tc-calc-field">
+            <label>People on your count</label>
+            <div class="tc-calc-stepper">
+              <button type="button" aria-label="Fewer people" onclick="tcStep('people', -1)">&minus;</button>
+              <div class="tc-calc-val" id="tcPeopleVal">2 people</div>
+              <button type="button" aria-label="More people" onclick="tcStep('people', 1)">+</button>
+            </div>
+          </div>
+          <div class="tc-calc-field">
+            <label>Hours it takes, start to finish</label>
+            <div class="tc-calc-stepper">
+              <button type="button" aria-label="Fewer hours" onclick="tcStep('hours', -1)">&minus;</button>
+              <div class="tc-calc-val" id="tcHoursVal">8 hours</div>
+              <button type="button" aria-label="More hours" onclick="tcStep('hours', 1)">+</button>
+            </div>
+          </div>
+          <div class="tc-calc-field">
+            <label>Counts per month</label>
+            <div class="tc-calc-stepper">
+              <button type="button" aria-label="Fewer counts" onclick="tcStep('freq', -1)">&minus;</button>
+              <div class="tc-calc-val" id="tcFreqVal">1&times; per month</div>
+              <button type="button" aria-label="More counts" onclick="tcStep('freq', 1)">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tc-calc-card">
+          <div class="tc-calc-eyebrow" id="tcCardEyebrow">Manual counting costs you</div>
+
+          <div class="tc-calc-stat-row">
+            <div class="tc-calc-stat">
+              <div class="tc-calc-num" id="tcHeroDollars">$4,824</div>
+              <div class="tc-calc-cap">a year</div>
+            </div>
+            <div class="tc-calc-stat">
+              <div class="tc-calc-num" id="tcHeroHours">216<span class="tc-calc-unit">hrs</span></div>
+              <div class="tc-calc-cap">a year</div>
+            </div>
+          </div>
+
+          <div class="tc-calc-bar-track">
+            <div class="tc-calc-bar-fill" id="tcMainBar"></div>
+          </div>
+          <div class="tc-calc-bar-caption" id="tcBarCaption">
+            <span id="tcBarLeft">18 hrs today</span>
+            <span id="tcBarRight">~20 min with TerryCount</span>
+          </div>
+
+          <button class="tc-calc-reveal-btn" id="tcRevealBtn" onclick="tcToggleReveal()">
+            How much could I save?
+            <span>
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1 3.5L5.5 8L10 3.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+
+          <div class="tc-calc-savings" id="tcSavingsPanel">
+            <a class="tc-calc-cta" id="tcMainCta" href="https://tally.so/r/rjbaEp" target="_blank">Save $4,736 a year &mdash; join the waitlist</a>
+            <button class="tc-calc-reset-btn" id="tcResetBtn" onclick="tcResetReveal()">&#8630; Start over</button>
+          </div>
         </div>
       </div>
     </div><!-- hero-right -->
@@ -1301,28 +1558,135 @@
 </footer>
 
 <script>
-  const form = document.getElementById('waitlist-form');
-  const success = document.getElementById('form-success');
+  // ── ANALYTICS SHIM ──
+  // Always records locally so events are verifiable in devtools, and forwards
+  // to gtag() (GA4) / plausible() automatically since both are now on the page.
+  function tcTrack(name, props) {
+    var payload = Object.assign({ variant: window.tcVariant }, props || {});
+    window.tcEvents = window.tcEvents || [];
+    window.tcEvents.push({ name: name, props: payload, ts: Date.now() });
+    if (window.console && console.debug) console.debug('[tc-track]', name, payload);
+    if (typeof window.plausible === 'function') window.plausible(name, { props: payload });
+    // GA4's gtag('config', ...) call already auto-fires its own reserved "page_view"
+    // event (carrying `variant` via the gtag('set', ...) global parameter above), so
+    // forwarding our own page_view too would double-count pageviews in GA4 reports.
+    if (typeof window.gtag === 'function' && name !== 'page_view') window.gtag('event', name, payload);
+  }
 
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const data = new FormData(form);
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        body: data,
-        headers: { 'Accept': 'application/json' }
-      });
-      if (res.ok) {
-        form.style.display = 'none';
-        success.style.display = 'block';
-      } else {
-        alert('Something went wrong. Please try again.');
-      }
-    } catch {
-      alert('Something went wrong. Please try again.');
+  document.addEventListener('DOMContentLoaded', function () {
+    tcTrack('page_view', { path: location.pathname });
+  });
+
+  // Fires for every Tally waitlist link on the page (nav, hero, pricing, calculator CTA, waitlist section).
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest && e.target.closest('a[href*="tally.so"]');
+    if (link) {
+      tcTrack('tally_waitlist_click', { href: link.href, id: link.id || null });
     }
   });
+
+  // ── LINEN CALCULATOR (hero, variant B) ──
+  // Math/behavior ported as-is from terrycount-hero-v4.html.
+  const tcState = { people: 2, hours: 8, freq: 1, revealed: false };
+  const tcLimits = { people: [1, 12], hours: [1, 16], freq: [1, 8] };
+  const TC_DATA_ENTRY_HOURS = 1;
+  const TC_MGMT_HOURS = 1;
+  const TC_STAFF_RATE = 22;
+  const TC_MGMT_RATE = 40;
+
+  function tcTerryHoursFor(countingHours) {
+    return Math.min(0.75, Math.max(0.25, countingHours / 48));
+  }
+
+  function tcStep(key, dir) {
+    const [min, max] = tcLimits[key];
+    tcState[key] = Math.min(max, Math.max(min, tcState[key] + dir));
+    tcRender();
+  }
+
+  function tcFmtHours(h) {
+    if (h < 1) return Math.round(h * 60) + ' min';
+    return (Math.round(h * 10) / 10).toLocaleString() + ' hrs';
+  }
+
+  function tcFmtDollars(n) {
+    return '$' + Math.round(n).toLocaleString() + '+';
+  }
+
+  function tcToggleReveal() {
+    tcState.revealed = true;
+    tcRender();
+    tcTrack('calculator_reveal_click', {
+      people: tcState.people,
+      hours: tcState.hours,
+      counts_per_month: tcState.freq
+    });
+  }
+
+  function tcResetReveal() {
+    tcState.revealed = false;
+    tcRender();
+  }
+
+  function tcRender() {
+    const { people, hours, freq } = tcState;
+    const countingHours = people * hours;
+    const manualPerCount = countingHours + TC_DATA_ENTRY_HOURS + TC_MGMT_HOURS;
+    const terryHours = tcTerryHoursFor(countingHours);
+    const terryMins = Math.round(terryHours * 60 / 5) * 5;
+    const annualHoursSaved = (manualPerCount - terryHours) * freq * 12;
+
+    const manualDollarsPerCount = (countingHours + TC_DATA_ENTRY_HOURS) * TC_STAFF_RATE + TC_MGMT_HOURS * TC_MGMT_RATE;
+    const terryDollarsPerCount = terryHours * TC_STAFF_RATE;
+    const annualDollarsSaved = (manualDollarsPerCount - terryDollarsPerCount) * freq * 12;
+
+    const wasteAnnualDollars = manualDollarsPerCount * freq * 12;
+    const wasteAnnualHours = manualPerCount * freq * 12;
+
+    document.getElementById('tcPeopleVal').textContent = people + (people === 1 ? ' person' : ' people');
+    document.getElementById('tcHoursVal').textContent = hours + (hours === 1 ? ' hour' : ' hours');
+    document.getElementById('tcFreqVal').textContent = freq + '× per month';
+
+    document.getElementById('tcBarLeft').textContent = tcFmtHours(manualPerCount) + ' today';
+    document.getElementById('tcBarRight').textContent = '~' + terryMins + ' min with TerryCount';
+
+    const barCaption = document.getElementById('tcBarCaption');
+    const mainBar = document.getElementById('tcMainBar');
+    const heroDollars = document.getElementById('tcHeroDollars');
+    const heroHours = document.getElementById('tcHeroHours');
+    const eyebrow = document.getElementById('tcCardEyebrow');
+    const revealBtn = document.getElementById('tcRevealBtn');
+    const savingsPanel = document.getElementById('tcSavingsPanel');
+
+    if (!tcState.revealed) {
+      eyebrow.textContent = 'Manual counting costs you';
+      heroDollars.textContent = tcFmtDollars(wasteAnnualDollars);
+      heroHours.innerHTML = Math.round(wasteAnnualHours).toLocaleString() + '<span class="tc-calc-unit">hrs</span>';
+      mainBar.style.width = '100%';
+      barCaption.classList.remove('open');
+      revealBtn.classList.remove('hidden');
+      savingsPanel.classList.remove('open');
+    } else {
+      eyebrow.textContent = 'TerryCount could save you';
+      heroDollars.textContent = tcFmtDollars(annualDollarsSaved);
+      heroHours.innerHTML = Math.round(annualHoursSaved).toLocaleString() + '<span class="tc-calc-unit">hrs</span>';
+      mainBar.style.width = Math.max(2, (terryHours / manualPerCount) * 100) + '%';
+      barCaption.classList.add('open');
+      revealBtn.classList.add('hidden');
+      savingsPanel.classList.add('open');
+    }
+
+    const params = new URLSearchParams({
+      people, hours, counts_per_month: freq,
+      annual_hours_saved: Math.round(annualHoursSaved),
+      annual_dollars_saved: Math.round(annualDollarsSaved)
+    });
+    const mainCta = document.getElementById('tcMainCta');
+    mainCta.href = 'https://tally.so/r/rjbaEp?' + params.toString();
+    mainCta.textContent = 'Save ' + tcFmtDollars(annualDollarsSaved) + ' a year — join the waitlist';
+  }
+
+  tcRender();
 </script>
 
 </body>
