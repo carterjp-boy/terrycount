@@ -946,6 +946,7 @@
       .hero-specs { justify-content: center; }
       .hero-ctas { justify-content: center; }
       .hero-right { justify-content: center; }
+      .tc-calc-inputs { justify-items: center; margin: 0 auto; }
 
       /* Phone mockups */
       .hero-phones { gap: 10px; justify-content: center; }
@@ -1006,17 +1007,15 @@
     /* ── A/B VARIANT TOGGLE ── */
     /* Both variants render server-side identical HTML; only display is switched. */
     html.variant-b .hero-phones { display: none; }
+    html.variant-b .hero-ctas { display: none; }
+    .tc-calc-inputs { display: none; }
+    html.variant-b .tc-calc-inputs { display: grid; }
     .tc-calc { display: none; }
     html.variant-b .tc-calc { display: flex; }
 
-    /* ── LINEN CALCULATOR (hero-right, variant B) ── */
-    .tc-calc {
-      flex-direction: column;
-      gap: 20px;
-      width: 100%;
-      max-width: 420px;
-    }
-    .tc-calc-inputs { display: grid; gap: 12px; }
+    /* ── LINEN CALCULATOR ── */
+    /* Inputs live in hero-left (in place of hero-ctas); result card lives in hero-right (in place of the phone mockups). */
+    .tc-calc-inputs { gap: 12px; max-width: 400px; width: 100%; }
     .tc-calc-field label {
       display: block;
       font-size: 12.5px;
@@ -1061,6 +1060,7 @@
       padding: 0 8px;
     }
 
+    .tc-calc { width: 100%; max-width: 420px; }
     .tc-calc-card {
       background: var(--teal);
       border-radius: var(--radius);
@@ -1189,6 +1189,35 @@
         <a href="https://tally.so/r/rjbaEp" target="_blank" class="btn-primary">Join the waitlist, it's free</a>
         <a href="#how-it-works" class="btn-secondary">See how it works</a>
       </div>
+
+      <!-- CALCULATOR INPUTS (variant B only; replaces hero-ctas above via CSS) -->
+      <div class="tc-calc-inputs" id="tcCalcInputs">
+        <div class="tc-calc-field">
+          <label>People on your count</label>
+          <div class="tc-calc-stepper">
+            <button type="button" aria-label="Fewer people" onclick="tcStep('people', -1)">&minus;</button>
+            <div class="tc-calc-val" id="tcPeopleVal">2 people</div>
+            <button type="button" aria-label="More people" onclick="tcStep('people', 1)">+</button>
+          </div>
+        </div>
+        <div class="tc-calc-field">
+          <label>Hours it takes, start to finish</label>
+          <div class="tc-calc-stepper">
+            <button type="button" aria-label="Fewer hours" onclick="tcStep('hours', -1)">&minus;</button>
+            <div class="tc-calc-val" id="tcHoursVal">8 hours</div>
+            <button type="button" aria-label="More hours" onclick="tcStep('hours', 1)">+</button>
+          </div>
+        </div>
+        <div class="tc-calc-field">
+          <label>Counts per month</label>
+          <div class="tc-calc-stepper">
+            <button type="button" aria-label="Fewer counts" onclick="tcStep('freq', -1)">&minus;</button>
+            <div class="tc-calc-val" id="tcFreqVal">1&times; per month</div>
+            <button type="button" aria-label="More counts" onclick="tcStep('freq', 1)">+</button>
+          </div>
+        </div>
+      </div>
+
       <div class="hero-specs">
         <span class="hero-spec">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
@@ -1227,35 +1256,8 @@
         </div>
       </div>
 
-      <!-- CALCULATOR (variant B only, shown/hidden via CSS based on html.variant-a / html.variant-b) -->
+      <!-- CALCULATOR RESULT CARD (variant B only, shown/hidden via CSS based on html.variant-a / html.variant-b) -->
       <div class="tc-calc" id="tcCalc">
-        <div class="tc-calc-inputs">
-          <div class="tc-calc-field">
-            <label>People on your count</label>
-            <div class="tc-calc-stepper">
-              <button type="button" aria-label="Fewer people" onclick="tcStep('people', -1)">&minus;</button>
-              <div class="tc-calc-val" id="tcPeopleVal">2 people</div>
-              <button type="button" aria-label="More people" onclick="tcStep('people', 1)">+</button>
-            </div>
-          </div>
-          <div class="tc-calc-field">
-            <label>Hours it takes, start to finish</label>
-            <div class="tc-calc-stepper">
-              <button type="button" aria-label="Fewer hours" onclick="tcStep('hours', -1)">&minus;</button>
-              <div class="tc-calc-val" id="tcHoursVal">8 hours</div>
-              <button type="button" aria-label="More hours" onclick="tcStep('hours', 1)">+</button>
-            </div>
-          </div>
-          <div class="tc-calc-field">
-            <label>Counts per month</label>
-            <div class="tc-calc-stepper">
-              <button type="button" aria-label="Fewer counts" onclick="tcStep('freq', -1)">&minus;</button>
-              <div class="tc-calc-val" id="tcFreqVal">1&times; per month</div>
-              <button type="button" aria-label="More counts" onclick="tcStep('freq', 1)">+</button>
-            </div>
-          </div>
-        </div>
-
         <div class="tc-calc-card">
           <div class="tc-calc-eyebrow" id="tcCardEyebrow">Manual counting costs you</div>
 
