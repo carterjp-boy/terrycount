@@ -1051,10 +1051,13 @@
 
     /* Let both columns fill their grid tracks so the hero spans the full content width. */
     html.variant-b .tc-hero-subhead-b { max-width: none; }
-    html.variant-b .tc-calc-inputs { max-width: none; }
+    html.variant-b .tc-calc { max-width: none; }
+    /* The steppers hold a single short value, so they're capped well short of the
+       column and stretched to that cap — narrow enough to avoid a field of white
+       space, uniform so the three rows still line up. */
+    html.variant-b .tc-calc-inputs { max-width: 300px; }
     html.variant-b .tc-calc-stepper { width: 100%; }
     html.variant-b .tc-calc-stepper .tc-calc-val { flex: 1; }
-    html.variant-b .tc-calc { max-width: none; }
 
     /* ── LINEN CALCULATOR ── */
     /* Inputs and result card both live in hero-left (in place of hero-ctas), swapping on
