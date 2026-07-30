@@ -518,7 +518,8 @@
       font-weight: 800;
       line-height: 1.14;
       letter-spacing: -0.025em;
-      max-width: 34ch;
+      /* Wide enough that the explicit <br> is the only break on desktop. */
+      max-width: 46ch;
       margin: 0 0 12px;
     }
     .tc-flow-head p {
@@ -540,8 +541,48 @@
       display: flex;
       flex-direction: column;
     }
-    .tc-fcard.is-engine { width: 260px; border: 2px solid var(--teal); box-shadow: 0 6px 20px rgba(28,42,71,0.11); }
     .tc-fcard.is-dest { width: 260px; }
+
+    /* The engine card carries a coral outline with a highlight travelling around it,
+       so the reconciliation step reads as continuously live rather than a static step.
+       The conic gradient is masked down to the border area only; browsers without
+       @property support skip the animation and keep the solid coral outline. */
+    .tc-fcard.is-engine {
+      width: 260px;
+      border: 2px solid var(--coral);
+      box-shadow: 0 6px 20px rgba(224,112,56,0.16);
+      position: relative;
+    }
+    @property --tc-engine-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+    .tc-fcard.is-engine::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      padding: 2px;
+      background: conic-gradient(
+        from var(--tc-engine-angle),
+        rgba(224,112,56,0) 0deg,
+        rgba(224,112,56,0) 200deg,
+        #F7B98C 290deg,
+        var(--white) 330deg,
+        rgba(224,112,56,0) 360deg
+      );
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+              mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      animation: tc-engine-cycle 3.2s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes tc-engine-cycle { to { --tc-engine-angle: 360deg; } }
+    @media (prefers-reduced-motion: reduce) {
+      .tc-fcard.is-engine::before { animation: none; }
+    }
 
     /* The two capture methods stack vertically inside one dashed bracket, so they read
        as alternatives to each other rather than as consecutive steps. */
@@ -573,14 +614,6 @@
 
     .tc-flogo { height: 38px; display: flex; align-items: center; gap: 8px; margin-bottom: 13px; }
     .tc-flogo img.tc-brand { height: 34px; width: auto; }
-    .tc-flogo .tc-ph {
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
     .tc-fstep {
       font-size: 10px;
       font-weight: 800;
@@ -1490,20 +1523,16 @@
   <div class="container">
     <div class="tc-flow-head">
       <span class="tc-pill on-panel">How TerryCount Works</span>
-      <h2>Text it or snap it &mdash; either way it lands in your sheet</h2>
+      <!-- Explicit break so the second sentence starts line 2, instead of wrapping
+           at whatever word happens to hit the max-width. -->
+      <h2>Text it or snap it.<br>Either way the count lands in your sheet.</h2>
       <p>TerryCount will integrate into your team's preferred way of working.</p>
     </div>
 
     <div class="tc-rail">
       <div class="tc-fcard">
         <div class="tc-flogo">
-          <span class="tc-ph">
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <rect x="2.5" y="3" width="6.5" height="14" rx="1.6" stroke="#6b7280" stroke-width="1.6"/>
-              <rect x="11" y="3" width="6.5" height="14" rx="1.6" stroke="#6b7280" stroke-width="1.6"/>
-              <circle cx="14.3" cy="10" r="1.1" fill="#6b7280"/>
-            </svg>
-          </span>
+          <img class="tc-brand" src="/assets/terrycount-mark.png" alt="TerryCount" width="128" height="127" loading="lazy" decoding="async">
         </div>
         <div class="tc-fstep">Step 1</div>
         <h3>Onboard your team</h3>
