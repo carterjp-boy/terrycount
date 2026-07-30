@@ -238,49 +238,250 @@
       width: 300px;
       filter: drop-shadow(0 40px 80px rgba(0,0,0,0.18));
     }
-    /* ── HERO SHOT (before / after cross-fade) ── */
-    /* Two frames of the same shelf, same crop, stacked. The "after" frame and its
-       count label share one timeline so the number appears with the detections. */
-    .tc-shot {
-      position: relative;
+    /* ── HERO CAPTURE DEMO ── */
+    /* Shutter -> scan sweep -> detection boxes -> count tick -> row lands in the sheet,
+       looping. Shared markup, so both variants show it. Palette comes from the site
+       tokens; only --tc-demo-green and the mono stack are local to this block. */
+    .tc-demo {
       width: 100%;
       max-width: 520px;
-      margin: 0;
+      container-type: inline-size;
+      --tc-demo-green: #2e9e6b;
+      --tc-demo-mono: 'SF Mono', ui-monospace, Menlo, monospace;
+      --tc-demo-coral-soft: #F4A173;
+    }
+
+    .tc-cam {
+      position: relative;
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 24px 60px rgba(28,42,71,0.22);
-      line-height: 0;
+      background: var(--teal-d);
+      box-shadow: 0 24px 60px -18px rgba(28,42,71,0.35);
+      aspect-ratio: 16 / 10;
     }
-    .tc-shot-img { display: block; width: 100%; height: auto; }
-    .tc-shot-after {
+    .tc-cam-photo {
       position: absolute;
       inset: 0;
-      opacity: 0;
-      animation: tc-shot-fade 7s ease-in-out infinite;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
-    .tc-shot-count {
+
+    /* viewfinder corners */
+    .tc-corner {
       position: absolute;
-      left: 0; right: 0; bottom: 0;
-      padding: 42px 20px 18px;
+      width: 26px; height: 26px;
+      border: 3px solid rgba(255,255,255,0.85);
+      border-radius: 2px;
+      z-index: 5;
+    }
+    .tc-corner.tl { top: 16px; left: 16px; border-right: none; border-bottom: none; }
+    .tc-corner.tr { top: 16px; right: 16px; border-left: none; border-bottom: none; }
+    .tc-corner.bl { bottom: 16px; left: 16px; border-right: none; border-top: none; }
+    .tc-corner.br { bottom: 16px; right: 16px; border-left: none; border-top: none; }
+
+    .tc-status {
+      position: absolute;
+      top: 16px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 8;
+      font-family: var(--tc-demo-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.85);
+      background: rgba(20,29,51,0.6);
+      backdrop-filter: blur(6px);
+      padding: 5px 12px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .tc-scanline {
+      position: absolute;
+      left: 0; right: 0;
+      top: -4px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--coral) 20%, var(--tc-demo-coral-soft) 50%, var(--coral) 80%, transparent);
+      box-shadow: 0 0 18px 4px rgba(224,112,56,0.55);
+      opacity: 0;
+      z-index: 6;
+    }
+    .tc-cam.is-scanning .tc-scanline { animation: tc-sweep 1.6s ease-in-out forwards; }
+    @keyframes tc-sweep {
+      0%   { opacity: 0; top: -4px; }
+      8%   { opacity: 1; }
+      92%  { opacity: 1; }
+      100% { opacity: 0; top: 100%; }
+    }
+
+    .tc-bbox {
+      position: absolute;
+      border: 2.5px solid var(--coral);
+      border-radius: 8px;
+      background: rgba(224,112,56,0.08);
+      opacity: 0;
+      transform: scale(1.06);
+      z-index: 7;
+    }
+    /* Inside the box, not above it: the stacks reach the top of the frame, so an
+       outside tag clipped off the edge. b2 tags right so it clears the status pill. */
+    .tc-bbox-tag {
+      position: absolute;
+      top: 5px; left: 5px;
+      background: var(--coral);
       color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--tc-demo-mono);
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .tc-bbox.b2 .tc-bbox-tag { left: auto; right: 5px; }
+    .tc-cam.is-boxed .tc-bbox { animation: tc-boxin 0.35s cubic-bezier(.2,.9,.3,1.2) forwards; }
+    .tc-cam.is-boxed .tc-bbox.b2 { animation-delay: 0.18s; }
+    @keyframes tc-boxin { to { opacity: 1; transform: scale(1); } }
+
+    /* ↓↓ TUNE HERE ↓↓ — box positions are percentages of the camera frame, set to
+       frame the two stacks in /assets/hero-before.jpg. Adjust if the photo changes. */
+    .tc-bbox.b1 { left: 9.5%;  top: 8.5%;  width: 38%; height: 70%; }
+    .tc-bbox.b2 { left: 48.5%; top: 11.5%; width: 43%; height: 66.5%; }
+    /* ↑↑ TUNE HERE ↑↑ */
+
+    .tc-chip {
+      position: absolute;
+      left: 50%; bottom: 18px;
+      transform: translate(-50%, 14px);
+      background: rgba(20,29,51,0.88);
+      backdrop-filter: blur(8px);
+      color: var(--white);
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      opacity: 0;
+      z-index: 8;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      white-space: nowrap;
+    }
+    .tc-chip-num {
+      font-family: var(--tc-demo-mono);
+      color: var(--tc-demo-coral-soft);
       font-size: 17px;
       font-weight: 700;
-      letter-spacing: -0.01em;
-      line-height: 1.3;
-      text-align: center;
-      /* Scrim so the white reads over whichever frame is showing. */
-      background: linear-gradient(to top, rgba(16,28,48,0.88), rgba(16,28,48,0));
+      min-width: 2ch;
+      text-align: right;
+    }
+    .tc-cam.is-counted .tc-chip { animation: tc-chipin 0.4s ease forwards; }
+    @keyframes tc-chipin { to { opacity: 1; transform: translate(-50%, 0); } }
+
+    .tc-flash {
+      position: absolute;
+      inset: 0;
+      background: var(--white);
       opacity: 0;
-      animation: tc-shot-fade 7s ease-in-out infinite;
+      z-index: 9;
+      pointer-events: none;
     }
-    @keyframes tc-shot-fade {
-      0%, 10%   { opacity: 0; }
-      28%, 76%  { opacity: 1; }
-      94%, 100% { opacity: 0; }
+    .tc-cam.is-snap .tc-flash { animation: tc-flash 0.35s ease-out; }
+    @keyframes tc-flash { 0% { opacity: 0.75; } 100% { opacity: 0; } }
+
+    /* ── mini spreadsheet ── */
+    .tc-sheet-card {
+      margin-top: 14px;
+      background: var(--white);
+      border: 1px solid #E6E9EF;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px -12px rgba(28,42,71,0.15);
     }
-    /* Hold the counted frame rather than pulsing it. */
+    .tc-sheet-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-bottom: 1px solid #EEF0F4;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .tc-sheet-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--tc-demo-green); flex-shrink: 0; }
+    .tc-sheet-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1.4fr 0.6fr 0.9fr;
+      font-size: 13.5px;
+      color: var(--text);
+    }
+    .tc-sheet-row > div {
+      padding: 11px 16px;
+      border-bottom: 1px solid #F2F4F7;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tc-sheet-row.is-header > div {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9AA2B1;
+      background: #FAFBFC;
+    }
+    /* The row keeps its space while hidden, so the sync doesn't shift the layout. */
+    .tc-sheet-row.is-live {
+      opacity: 0;
+      transform: translateY(-6px);
+      background: #FFF7F1;
+    }
+    .tc-sheet-row.is-live .qty { font-family: var(--tc-demo-mono); font-weight: 700; color: var(--coral); }
+    .tc-sheet-row.is-live .sync { color: var(--tc-demo-green); font-weight: 600; font-size: 12.5px; }
+    .tc-sheet-card.is-synced .tc-sheet-row.is-live { animation: tc-rowin 0.45s ease forwards; }
+    @keyframes tc-rowin { to { opacity: 1; transform: translateY(0); } }
+    .tc-sheet-row.is-old { color: #8A92A1; }
+    .tc-sheet-row.is-old .qty { font-family: var(--tc-demo-mono); }
+
+    /* Keyed to the card's own width, not the viewport: at 768px the hero is still two
+       columns, so this card is only ~370px wide even though the window is wide. */
+    @container (max-width: 480px) {
+      .tc-sheet-row { grid-template-columns: 1fr 1.4fr 0.7fr; }
+      .tc-sheet-row .col-loc, .tc-sheet-row .col-status { display: none; }
+      .tc-sheet-row > div { padding: 10px 12px; }
+      .tc-status { font-size: 10px; padding: 4px 9px; }
+      .tc-chip { font-size: 13px; padding: 8px 14px; bottom: 12px; }
+      .tc-chip-num { font-size: 15px; }
+      .tc-bbox-tag { font-size: 9.5px; padding: 2px 6px; }
+      .tc-corner { width: 18px; height: 18px; top: 10px; left: 10px; }
+      .tc-corner.tr { left: auto; right: 10px; }
+      .tc-corner.bl { top: auto; bottom: 10px; }
+      .tc-corner.br { top: auto; left: auto; bottom: 10px; right: 10px; }
+    }
+    /* Fallback for engines without container queries: catches the narrow-viewport
+       case, which is the one that matters most. */
+    @supports not (container-type: inline-size) {
+      @media (max-width: 900px) {
+        .tc-sheet-row { grid-template-columns: 1fr 1.4fr 0.7fr; }
+        .tc-sheet-row .col-loc, .tc-sheet-row .col-status { display: none; }
+        .tc-sheet-row > div { padding: 10px 12px; }
+      }
+    }
+
+    /* Final state, no motion. */
     @media (prefers-reduced-motion: reduce) {
-      .tc-shot-after, .tc-shot-count { animation: none; opacity: 1; }
+      .tc-scanline, .tc-flash { display: none; }
+      .tc-bbox, .tc-chip, .tc-sheet-row.is-live {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      .tc-chip { transform: translate(-50%, 0) !important; }
     }
     .phone-header {
       background: var(--teal);
@@ -1143,7 +1344,7 @@
 
     /* ── A/B VARIANT TOGGLE ── */
     /* Both variants render server-side identical HTML; only display is switched. */
-    /* .tc-shot (the before/after visual) is intentionally NOT hidden for variant B:
+    /* .tc-demo (the capture animation) is intentionally NOT hidden for variant B:
        it's the persistent right-column visual for both variants. */
     html.variant-b .hero-ctas { display: none; }
     html.variant-b .hero-badge { display: none; }
@@ -1561,18 +1762,51 @@
       </div>
     </div>
     <div class="hero-right">
-      <!-- One shelf, shown twice: the raw photo, with the detected-and-counted frame
-           cross-fading over it on a loop. Both frames are the same crop, so they
-           register exactly. -->
-      <figure class="tc-shot">
-        <img class="tc-shot-img" src="/assets/hero-before.jpg" width="1100" height="710"
-             alt="A hotel linen closet shelf stacked with folded queen sheets">
-        <!-- Decorative: it's the same shelf as above, and the figcaption carries the
-             result, so it's hidden from assistive tech rather than announced twice. -->
-        <img class="tc-shot-img tc-shot-after" src="/assets/hero-after.jpg" width="1100" height="710"
-             alt="" aria-hidden="true">
-        <figcaption class="tc-shot-count">Count: 40 queen sheets</figcaption>
-      </figure>
+      <!-- Animated capture demo: shutter, scan sweep, detection boxes, count tick,
+           then the row landing in the sheet. Shared by both variants. -->
+      <div class="tc-demo">
+        <div class="tc-cam" id="tcCam">
+          <img class="tc-cam-photo" src="/assets/hero-before.jpg" width="1100" height="710"
+               alt="A hotel linen closet shelf stacked with folded queen sheets">
+
+          <div class="tc-corner tl"></div>
+          <div class="tc-corner tr"></div>
+          <div class="tc-corner bl"></div>
+          <div class="tc-corner br"></div>
+
+          <div class="tc-status" id="tcStatus">Ready</div>
+          <div class="tc-scanline"></div>
+
+          <div class="tc-bbox b1"><span class="tc-bbox-tag">queen sheet &times;21</span></div>
+          <div class="tc-bbox b2"><span class="tc-bbox-tag">queen sheet &times;19</span></div>
+
+          <div class="tc-chip">
+            <span class="tc-chip-num" id="tcDemoCount">0</span>
+            <span>queen sheets counted</span>
+          </div>
+
+          <div class="tc-flash"></div>
+        </div>
+
+        <div class="tc-sheet-card" id="tcSheetCard">
+          <div class="tc-sheet-head"><span class="tc-sheet-dot"></span> Inventory &mdash; Main Building</div>
+          <div class="tc-sheet-row is-header">
+            <div class="col-loc">Location</div><div>Shelf</div><div>Item</div><div>Qty</div><div class="col-status">Status</div>
+          </div>
+          <div class="tc-sheet-row is-live">
+            <div class="col-loc">Closet 2</div><div>Shelf B</div><div>Queen sheets</div>
+            <div class="qty">40</div><div class="col-status sync">&#10003; Synced</div>
+          </div>
+          <div class="tc-sheet-row is-old">
+            <div class="col-loc">Closet 2</div><div>Shelf A</div><div>Bath towels</div>
+            <div class="qty">62</div><div class="col-status">&mdash;</div>
+          </div>
+          <div class="tc-sheet-row is-old">
+            <div class="col-loc">Closet 1</div><div>Shelf C</div><div>Pillowcases</div>
+            <div class="qty">115</div><div class="col-status">&mdash;</div>
+          </div>
+        </div>
+      </div>
     </div><!-- hero-right -->
   </div><!-- hero-inner -->
 </section>
@@ -2026,6 +2260,90 @@
   });
 
   tcRenderInputs();
+
+  // ── HERO CAPTURE DEMO ──
+  // Sequence ported from terrycount-hero-demo.html. One timer, tracked on window so a
+  // re-run of this script (or a bfcache restore) replaces it rather than stacking a
+  // second copy that would fight the first over the same classes.
+  (function () {
+    const cam = document.getElementById('tcCam');
+    const sheetCard = document.getElementById('tcSheetCard');
+    const countEl = document.getElementById('tcDemoCount');
+    const statusEl = document.getElementById('tcStatus');
+    if (!cam || !sheetCard || !countEl || !statusEl) return;
+
+    const TC_DEMO_LOOP_MS = 8500;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let stepTimers = [];
+    let rafId = null;
+
+    function clearAll() {
+      if (window.tcDemoTimer) { clearInterval(window.tcDemoTimer); window.tcDemoTimer = null; }
+      stepTimers.forEach(clearTimeout);
+      stepTimers = [];
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+    }
+
+    function tickCount(to, dur) {
+      const start = performance.now();
+      (function step(t) {
+        // Clamp both ends: a frame timestamp that precedes `start` would otherwise
+        // drive the easing negative and print a nonsense count.
+        const p = Math.min(Math.max((t - start) / dur, 0), 1);
+        countEl.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) rafId = requestAnimationFrame(step);
+        else rafId = null;
+      })(performance.now());
+      // Land on the final number even where frames are throttled (backgrounded tab,
+      // low-power mode); without this the chip can stick partway through the count.
+      stepTimers.push(setTimeout(function () { countEl.textContent = to; }, dur + 60));
+    }
+
+    function runSequence() {
+      // Drop any steps still pending from the previous pass, so a slow frame can't
+      // leave a stuck box or a frozen count on loop 2+.
+      stepTimers.forEach(clearTimeout);
+      stepTimers = [];
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+
+      cam.classList.remove('is-scanning', 'is-boxed', 'is-counted', 'is-snap');
+      sheetCard.classList.remove('is-synced');
+      countEl.textContent = '0';
+      statusEl.textContent = 'Ready';
+      void cam.offsetWidth; // reflow, so the animations restart rather than resume
+
+      if (reduced) {
+        cam.classList.add('is-boxed', 'is-counted');
+        sheetCard.classList.add('is-synced');
+        countEl.textContent = '40';
+        statusEl.textContent = 'Counted';
+        return;
+      }
+
+      const at = function (ms, fn) { stepTimers.push(setTimeout(fn, ms)); };
+      at(600,  function () { cam.classList.add('is-snap');     statusEl.textContent = 'Captured'; });
+      at(1000, function () { cam.classList.add('is-scanning'); statusEl.textContent = 'Counting…'; });
+      at(2400, function () { cam.classList.add('is-boxed'); });
+      at(2800, function () { cam.classList.add('is-counted'); tickCount(40, 900); });
+      at(3800, function () { sheetCard.classList.add('is-synced'); statusEl.textContent = 'Synced'; });
+    }
+
+    function start() {
+      clearAll();
+      runSequence();
+      if (!reduced) window.tcDemoTimer = setInterval(runSequence, TC_DEMO_LOOP_MS);
+    }
+
+    start();
+    // Don't burn loops while the tab is backgrounded, and don't leave a timer behind
+    // when the page is bfcached on navigation.
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) clearAll();
+      else if (!window.tcDemoTimer) start();
+    });
+    window.addEventListener('pagehide', clearAll);
+    window.addEventListener('pageshow', function (e) { if (e.persisted) start(); });
+  })();
 </script>
 
 </body>
