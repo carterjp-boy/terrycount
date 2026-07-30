@@ -301,6 +301,12 @@
       border-radius: 999px;
       text-transform: uppercase;
       white-space: nowrap;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    /* Green once the row has landed in the sheet. */
+    .tc-status.is-done {
+      background: rgba(46,158,107,0.85);
+      color: var(--white);
     }
 
     .tc-scanline {
@@ -807,8 +813,11 @@
       white-space: nowrap;
     }
 
-    .tc-flogo { height: 38px; display: flex; align-items: center; gap: 8px; margin-bottom: 13px; }
+    .tc-flogo { height: 42px; display: flex; align-items: center; gap: 8px; margin-bottom: 13px; }
     .tc-flogo img.tc-brand { height: 34px; width: auto; }
+    /* The badge artwork carries transparent margin, so at a shared 34px it rendered
+       27.6px of ink against WhatsApp's 34px. 42px evens up the visible marks. */
+    .tc-flogo img.tc-brand.is-badge { height: 42px; }
     .tc-fstep {
       font-size: 10px;
       font-weight: 800;
@@ -1800,20 +1809,20 @@
         </div>
 
         <div class="tc-sheet-card" id="tcSheetCard">
-          <div class="tc-sheet-head"><span class="tc-sheet-dot"></span> Inventory &mdash; Main Building</div>
+          <div class="tc-sheet-head"><span class="tc-sheet-dot"></span> Inventory &mdash; Hotel Terry</div>
           <div class="tc-sheet-row is-header">
-            <div class="col-loc">Location</div><div>Shelf</div><div>Item</div><div>Qty</div><div class="col-status">Status</div>
+            <div class="col-loc">Location</div><div>Closet</div><div>Item</div><div>Qty</div><div class="col-status">Status</div>
           </div>
           <div class="tc-sheet-row is-live">
-            <div class="col-loc">Closet 2</div><div>Shelf B</div><div>Queen sheets</div>
+            <div class="col-loc">Floor 2</div><div>Closet 2</div><div>Queen sheets</div>
             <div class="qty">40</div><div class="col-status sync">&#10003; Synced</div>
           </div>
           <div class="tc-sheet-row is-old">
-            <div class="col-loc">Closet 2</div><div>Shelf A</div><div>Bath towels</div>
+            <div class="col-loc">Floor 2</div><div>Closet 2</div><div>Bath towels</div>
             <div class="qty">62</div><div class="col-status">&mdash;</div>
           </div>
           <div class="tc-sheet-row is-old">
-            <div class="col-loc">Closet 1</div><div>Shelf C</div><div>Pillowcases</div>
+            <div class="col-loc">Floor 1</div><div>Closet 1</div><div>Pillowcases</div>
             <div class="qty">115</div><div class="col-status">&mdash;</div>
           </div>
         </div>
@@ -1871,7 +1880,7 @@
     <div class="tc-rail">
       <div class="tc-fcard">
         <div class="tc-flogo">
-          <img class="tc-brand" src="/assets/terrycount-mark.png" alt="TerryCount" width="128" height="127" loading="lazy" decoding="async">
+          <img class="tc-brand is-badge" src="/assets/terrycount-mark.png" alt="TerryCount" width="128" height="127" loading="lazy" decoding="async">
         </div>
         <div class="tc-fstep">Step 1</div>
         <h3>Onboard your team</h3>
@@ -1899,7 +1908,7 @@
 
         <div class="tc-fcard">
           <div class="tc-flogo">
-            <img class="tc-brand" src="/assets/terrycount-mark.png" alt="TerryCount app" width="128" height="127" loading="lazy" decoding="async">
+            <img class="tc-brand is-badge" src="/assets/terrycount-mark.png" alt="TerryCount app" width="128" height="127" loading="lazy" decoding="async">
           </div>
           <div class="tc-fstep">Step 2b</div>
           <h3>Snap a photo</h3>
@@ -1916,7 +1925,7 @@
 
       <div class="tc-fcard is-engine">
         <div class="tc-flogo">
-          <img class="tc-brand" src="/assets/terrycount-mark.png" alt="TerryCount" width="128" height="127" loading="lazy" decoding="async">
+          <img class="tc-brand is-badge" src="/assets/terrycount-mark.png" alt="TerryCount" width="128" height="127" loading="lazy" decoding="async">
         </div>
         <div class="tc-fstep">Step 3</div>
         <h3>TerryCount reconciles it</h3>
@@ -2319,6 +2328,7 @@
 
       cam.classList.remove('is-scanning', 'is-boxed', 'is-counted', 'is-snap');
       sheetCard.classList.remove('is-synced');
+      statusEl.classList.remove('is-done');
       countEl.textContent = '0';
       statusEl.textContent = 'Ready';
       void cam.offsetWidth; // reflow, so the animations restart rather than resume
@@ -2327,7 +2337,8 @@
         cam.classList.add('is-boxed', 'is-counted');
         sheetCard.classList.add('is-synced');
         countEl.textContent = '40';
-        statusEl.textContent = 'Counted';
+        statusEl.textContent = 'Synced';
+        statusEl.classList.add('is-done');
         return;
       }
 
@@ -2336,7 +2347,11 @@
       at(1000, function () { cam.classList.add('is-scanning'); statusEl.textContent = 'Counting…'; });
       at(2400, function () { cam.classList.add('is-boxed'); });
       at(2800, function () { cam.classList.add('is-counted'); tickCount(40, 900); });
-      at(3800, function () { sheetCard.classList.add('is-synced'); statusEl.textContent = 'Synced'; });
+      at(3800, function () {
+        sheetCard.classList.add('is-synced');
+        statusEl.textContent = 'Synced';
+        statusEl.classList.add('is-done');
+      });
     }
 
     function start() {
