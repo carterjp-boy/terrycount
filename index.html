@@ -267,6 +267,11 @@
       object-fit: cover;
       display: block;
     }
+    /* Cross-fades in on the same beat as the boxes, so the detected frame and the
+       tagged counts arrive together. */
+    .tc-cam-photo-after { opacity: 0; z-index: 1; }
+    .tc-cam.is-boxed .tc-cam-photo-after { animation: tc-photo-swap 0.35s ease forwards; }
+    @keyframes tc-photo-swap { to { opacity: 1; } }
 
     /* viewfinder corners */
     .tc-corner {
@@ -476,6 +481,7 @@
     /* Final state, no motion. */
     @media (prefers-reduced-motion: reduce) {
       .tc-scanline, .tc-flash { display: none; }
+      .tc-cam-photo-after { opacity: 1 !important; animation: none !important; }
       .tc-bbox, .tc-chip, .tc-sheet-row.is-live {
         animation: none !important;
         opacity: 1 !important;
@@ -1768,6 +1774,11 @@
         <div class="tc-cam" id="tcCam">
           <img class="tc-cam-photo" src="/assets/hero-before.jpg" width="1100" height="710"
                alt="A hotel linen closet shelf stacked with folded queen sheets">
+          <!-- The detected frame, swapped in when the boxes land. Same crop as the
+               plain photo so it registers exactly. fetchpriority low so it doesn't
+               compete with the first frame, which is the LCP candidate. -->
+          <img class="tc-cam-photo tc-cam-photo-after" src="/assets/hero-after.jpg"
+               width="1100" height="710" alt="" aria-hidden="true" fetchpriority="low">
 
           <div class="tc-corner tl"></div>
           <div class="tc-corner tr"></div>
