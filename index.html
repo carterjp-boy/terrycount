@@ -422,121 +422,226 @@
     }
 
     /* ── PROBLEM / SOLUTION ── */
-    .problem-solution { background: #f5f0e8; }
-    .ps-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-top: 56px;
-    }
-    @media (max-width: 700px) { .ps-grid { grid-template-columns: 1fr; } }
-    .ps-col {
-      border-radius: var(--radius);
-      padding: 36px 32px;
-    }
-    .ps-col.problem {
-      background: #FDF0EB;
-      border: 1px solid #EECFC2;
-    }
-    .ps-col.solution {
-      background: #EAE8F0;
-      border: 1px solid #C8C4D8;
-    }
-    .ps-label {
+    /* Shared by both A/B variants: only the hero differs between them. */
+    /* Keeps the standard 96px section padding: the reference's tighter 8px bottom was
+       paired with an 84px margin under the cards, which together match this. */
+    .problem-solution { background: var(--white); }
+
+    /* Pill pretitle, used by this section and the workflow section below it so both
+       pretitles read as the same component. */
+    .tc-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border-radius: 100px;
-      padding: 4px 12px;
-      margin-bottom: 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 22px;
     }
-    .ps-label.prob { background: #EECFC2; color: #7A2E10; }
-    .ps-label.sol  { background: #C8C4D8; color: #1C2B4A; }
-    .ps-col h3 { font-size: 20px; font-weight: 700; margin-bottom: 20px; line-height: 1.3; }
-    .ps-col.problem h3 { color: #7A2E10; }
-    .ps-col.solution h3 { color: #1C2B4A; }
-    .ps-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
-    .ps-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      font-size: 15px;
-      color: var(--text);
-      line-height: 1.55;
-    }
-    .ps-dot {
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px;
-      font-weight: 700;
-      margin-top: 1px;
-    }
-    .ps-dot.x { background: #EECFC2; color: #7A2E10; }
-    .ps-dot.check { background: #C8C4D8; color: #1C2B4A; }
+    /* The workflow section sits on the panel background, so its pill inverts to stay legible. */
+    .tc-pill.on-panel { background: var(--white); }
 
-    /* ── HOW IT WORKS ── */
-    .how { background: #FFFFFF; }
-    .how-steps {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-top: 56px;
-      position: relative;
+    .tc-ps-head { margin-bottom: 44px; }
+    .tc-ps-head h2 {
+      font-weight: 800;
+      font-size: clamp(28px, 3.6vw, 42px);
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      max-width: 30ch;
+      margin: 0;
     }
-    @media (max-width: 900px) {
-      .how-steps { grid-template-columns: 1fr 1fr; gap: 16px; }
-    }
-    @media (max-width: 480px) {
-      .how-steps { grid-template-columns: 1fr 1fr; gap: 12px; }
-    }
-    .how-step {
+    .tc-ps-head h2 b { color: var(--coral); font-weight: 800; }
+
+    .tc-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    .tc-pcard {
+      border-radius: 20px;
+      padding: 34px 32px 36px;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      text-align: left;
-      padding: 28px 24px 24px;
-      position: relative;
-      background: var(--white);
-      border-radius: 16px;
-      border: 1px solid var(--border);
     }
-    .how-icon {
-      width: 56px; height: 56px;
-      background: #FEF0E7;
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 20px;
-      flex-shrink: 0;
-    }
-    .how-icon svg { width: 28px; height: 28px; }
-    .how-step-num {
-      position: absolute;
-      top: 16px; right: 16px;
-      width: 24px; height: 24px;
-      background: var(--coral);
-      color: white;
-      font-size: 12px;
+    .tc-pcard.is-problem { background: var(--teal-l); }
+    .tc-pcard.is-solution { background: var(--coral); color: var(--white); }
+
+    .tc-pcard .tc-tag {
+      display: inline-flex;
+      width: fit-content;
+      font-size: 11px;
       font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      padding: 6px 13px;
+      margin-bottom: 18px;
+    }
+    .tc-pcard.is-problem .tc-tag { background: rgba(28,42,71,0.09); color: var(--teal-m); }
+    .tc-pcard.is-solution .tc-tag { background: rgba(255,255,255,0.2); color: var(--white); }
+
+    .tc-pcard p { font-size: 17px; line-height: 1.55; font-weight: 500; }
+    .tc-pcard.is-problem p { color: var(--text); }
+    .tc-pcard.is-solution p { color: var(--white); }
+    .tc-pcard p b { font-weight: 800; }
+
+    .tc-pcard-list { list-style: none; display: grid; gap: 11px; margin-top: 22px; }
+    .tc-pcard-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14.5px;
+      line-height: 1.42;
+      font-weight: 500;
+    }
+    .tc-pcard-list .tc-mark {
+      flex-shrink: 0;
+      width: 18px; height: 18px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      line-height: 1;
+      margin-top: 1px;
     }
-    .how-step h3 {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      color: var(--text);
+    .tc-pcard.is-problem .tc-pcard-list li { color: var(--text); }
+    .tc-pcard.is-problem .tc-pcard-list .tc-mark { background: rgba(28,42,71,0.1); }
+    .tc-pcard.is-solution .tc-pcard-list li { color: var(--white); }
+    .tc-pcard.is-solution .tc-pcard-list .tc-mark { background: rgba(255,255,255,0.22); }
+
+    /* ── HOW IT WORKS (workflow rail) ── */
+    .how {
+      background: var(--bg);
+      background-image: radial-gradient(rgba(28,42,71,0.10) 1px, transparent 1px);
+      background-size: 22px 22px;
     }
-    .how-step p {
-      font-size: 13px;
+    .tc-flow-head { margin-bottom: 46px; }
+    .tc-flow-head h2 {
+      font-size: clamp(27px, 3.2vw, 38px);
+      font-weight: 800;
+      line-height: 1.14;
+      letter-spacing: -0.025em;
+      max-width: 34ch;
+      margin: 0 0 12px;
+    }
+    .tc-flow-head p {
+      font-size: 16px;
+      line-height: 1.5;
       color: var(--muted);
-      line-height: 1.6;
+      max-width: 44ch;
+      margin: 0;
+    }
+
+    .tc-rail { display: flex; align-items: center; justify-content: center; }
+    .tc-fcard {
+      width: 208px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px 20px;
+      box-shadow: 0 3px 12px rgba(28,42,71,0.06);
+      display: flex;
+      flex-direction: column;
+    }
+    .tc-fcard.is-engine { width: 260px; border: 2px solid var(--teal); box-shadow: 0 6px 20px rgba(28,42,71,0.11); }
+    .tc-fcard.is-dest { width: 260px; }
+
+    /* The two capture methods stack vertically inside one dashed bracket, so they read
+       as alternatives to each other rather than as consecutive steps. */
+    .tc-fpair {
+      border: 1.5px dashed var(--border);
+      border-radius: 18px;
+      padding: 22px 20px 18px;
+      background: rgba(255,255,255,0.75);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      position: relative;
+    }
+    .tc-fpair::after {
+      content: "Count it either way";
+      position: absolute;
+      top: -9px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg);
+      padding: 0 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .tc-flogo { height: 38px; display: flex; align-items: center; gap: 8px; margin-bottom: 13px; }
+    .tc-flogo img.tc-brand { height: 34px; width: auto; }
+    .tc-flogo .tc-ph {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .tc-fstep {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: 5px;
+    }
+    .tc-fcard h3 { font-size: 15px; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; margin-bottom: 5px; }
+    .tc-fcard > p { font-size: 12.5px; line-height: 1.42; color: var(--muted); }
+
+    .tc-ferows { margin-top: 11px; }
+    .tc-ferow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .tc-ferow:last-child { border-bottom: none; }
+    .tc-ferow .tc-tick {
+      width: 13px; height: 13px;
+      border-radius: 50%;
+      background: rgba(224,112,56,0.16);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .tc-ferow .tc-lbl { color: var(--teal-m); }
+    .tc-ferow .tc-num { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+    .tc-fmini { margin-top: 11px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--white); }
+    .tc-fmini .tc-r { display: grid; grid-template-columns: 1.4fr 1fr; font-size: 10.5px; }
+    .tc-fmini .tc-r > div { padding: 5px 8px; border-bottom: 1px solid var(--border); }
+    .tc-fmini .tc-r:last-child > div { border-bottom: none; }
+    .tc-fmini .tc-r.is-head > div {
+      background: #F7F8FB;
+      font-size: 8.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    .tc-fmini .tc-n { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .tc-fmini .tc-r.is-hi > div { background: rgba(224,112,56,0.08); }
+    .tc-fmini .tc-r.is-hi .tc-n { color: var(--coral); }
+
+    .tc-fconn { display: flex; align-items: center; padding: 0 20px; flex-shrink: 0; }
+    .tc-or { align-self: center; font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .tc-or-wrap { display: flex; align-items: center; gap: 10px; }
+    .tc-or-wrap::before, .tc-or-wrap::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+    /* Below this width the horizontal rail can't hold five nodes, so it stacks and the
+       connector arrows rotate to point downward. */
+    @media (max-width: 1120px) {
+      .tc-rail { flex-direction: column; align-items: center; }
+      .tc-fconn { padding: 13px 0; transform: rotate(90deg); }
+      .tc-fcard, .tc-fcard.is-engine, .tc-fcard.is-dest { width: 280px; }
+    }
+    @media (max-width: 880px) {
+      .tc-cards { grid-template-columns: 1fr; gap: 16px; }
     }
 
 
@@ -974,9 +1079,6 @@
       .demo-phone-wrap { width: 240px; }
       .stat-row { gap: 16px; flex-wrap: wrap; justify-content: center; }
 
-      /* Problem/solution */
-      .ps-grid { grid-template-columns: 1fr; }
-
       /* Pricing */
       .pricing-card { padding: 36px 24px; }
       .pricing-card::before { display: none; }
@@ -1350,62 +1452,32 @@
 
 
 <!-- PROBLEM / SOLUTION -->
+<!-- Shared control for the A/B test: variant A and variant B render this identically,
+     only the hero above differs. -->
 <section class="problem-solution">
   <div class="container">
-    <p class="section-label">The problem</p>
-    <h2 class="section-title">Your staff shouldn't spend<br>days chasing inventory</h2>
-    <p class="section-sub">Manual counts create cascading problems, from inaccurate par levels to reorders that arrive too late.</p>
-    <div class="ps-grid">
-      <div class="ps-col problem">
-        <span class="ps-label prob">✕ &nbsp;Today</span>
-        <h3>Slow, error-prone, and never logged</h3>
-        <ul class="ps-list">
-          <li>
-            <span class="ps-dot x">✕</span>
-            <span>Housekeepers count tall stacks by hand. Miscounts on anything over 20 items are routine.</span>
-          </li>
-          <li>
-            <span class="ps-dot x">✕</span>
-            <span>Counts get written on paper or forgotten before they reach a spreadsheet</span>
-          </li>
-          <li>
-            <span class="ps-dot x">✕</span>
-            <span>No audit trail. When inventory goes missing, there's nothing to check.</span>
-          </li>
-          <li>
-            <span class="ps-dot x">✕</span>
-            <span>Reorder decisions are made on guesswork, leading to emergency orders or overstocking</span>
-          </li>
-          <li>
-            <span class="ps-dot x">✕</span>
-            <span>A full inventory check can eat an entire day — time your staff should be spending on guests.</span>
-          </li>
+    <div class="tc-ps-head">
+      <span class="tc-pill">Problem &amp; Solution</span>
+      <h2>Counting linens is still done by hand. <b>TerryCount fixes that.</b></h2>
+    </div>
+
+    <div class="tc-cards">
+      <div class="tc-pcard is-problem">
+        <span class="tc-tag">Today</span>
+        <p>A full count eats an entire day of staff time. <b>Tall stacks get miscounted,</b> and bad numbers turn into stockouts and rush orders.</p>
+        <ul class="tc-pcard-list">
+          <li><span class="tc-mark"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden="true"><path d="M1 1l7 7M8 1l-7 7" stroke="#1C2A47" stroke-width="1.8" stroke-linecap="round"/></svg></span>Clipboard counts, typed up later</li>
+          <li><span class="tc-mark"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden="true"><path d="M1 1l7 7M8 1l-7 7" stroke="#1C2A47" stroke-width="1.8" stroke-linecap="round"/></svg></span>No record of what was actually counted</li>
+          <li><span class="tc-mark"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden="true"><path d="M1 1l7 7M8 1l-7 7" stroke="#1C2A47" stroke-width="1.8" stroke-linecap="round"/></svg></span>Reorders based on guesswork, not real numbers</li>
         </ul>
       </div>
-      <div class="ps-col solution">
-        <span class="ps-label sol">✓ &nbsp;With TerryCount</span>
-        <h3>Scan a QR code. Take a photo. Done.</h3>
-        <ul class="ps-list">
-          <li>
-            <span class="ps-dot check">✓</span>
-            <span>Scan the QR code on the shelf to tag the location. No manual room entry.</span>
-          </li>
-          <li>
-            <span class="ps-dot check">✓</span>
-            <span>Photograph the linen stack. TerryCount counts every item type in under 3 seconds.</span>
-          </li>
-          <li>
-            <span class="ps-dot check">✓</span>
-            <span>Count auto-populates your existing Excel sheet with timestamp and location</span>
-          </li>
-          <li>
-            <span class="ps-dot check">✓</span>
-            <span>Full photo audit trail so discrepancies are easy to investigate</span>
-          </li>
-          <li>
-            <span class="ps-dot check">✓</span>
-            <span>Real par-level data means reorders happen at the right time, every time.</span>
-          </li>
+      <div class="tc-pcard is-solution">
+        <span class="tc-tag">With TerryCount</span>
+        <p>Counts go <b>straight into your spreadsheet</b> &mdash; tagged, timestamped, and done in minutes instead of a day.</p>
+        <ul class="tc-pcard-list">
+          <li><span class="tc-mark"><svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true"><path d="M1 4l2.6 2.6L9 1.2" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Text it or photograph it &mdash; either works</li>
+          <li><span class="tc-mark"><svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true"><path d="M1 4l2.6 2.6L9 1.2" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Every count timestamped and logged</li>
+          <li><span class="tc-mark"><svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true"><path d="M1 4l2.6 2.6L9 1.2" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Reorder on real par-level data</li>
         </ul>
       </div>
     </div>
@@ -1413,59 +1485,104 @@
 </section>
 
 <!-- HOW IT WORKS -->
+<!-- Keeps id="how-it-works": linked from the nav and the variant A hero CTA. -->
 <section class="how" id="how-it-works">
   <div class="container">
-    <p class="section-label">How it works</p>
-    <h2 class="section-title">From shelf to spreadsheet<br>in under a minute</h2>
-    <p class="section-sub">No training. No new system. Just a phone and a QR code.</p>
-    <div class="how-steps">
+    <div class="tc-flow-head">
+      <span class="tc-pill on-panel">How TerryCount Works</span>
+      <h2>Text it or snap it &mdash; either way it lands in your sheet</h2>
+      <p>TerryCount will integrate into your team's preferred way of working.</p>
+    </div>
 
-      <div class="how-step">
-        <div class="how-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-            <circle cx="12" cy="13" r="4"/>
-          </svg>
+    <div class="tc-rail">
+      <div class="tc-fcard">
+        <div class="tc-flogo">
+          <span class="tc-ph">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="2.5" y="3" width="6.5" height="14" rx="1.6" stroke="#6b7280" stroke-width="1.6"/>
+              <rect x="11" y="3" width="6.5" height="14" rx="1.6" stroke="#6b7280" stroke-width="1.6"/>
+              <circle cx="14.3" cy="10" r="1.1" fill="#6b7280"/>
+            </svg>
+          </span>
         </div>
-        <span class="how-step-num">1</span>
-        <h3>Snap a photo</h3>
-        <p>Open the app, scan the shelf QR code, and take one photo of the linen stack.</p>
+        <div class="tc-fstep">Step 1</div>
+        <h3>Onboard your team</h3>
+        <p>Closets, linens, and staff &mdash; set up together, once.</p>
       </div>
 
-      <div class="how-step">
-        <div class="how-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-          </svg>
-        </div>
-        <span class="how-step-num">2</span>
-        <h3>AI counts instantly</h3>
-        <p>TerryCount identifies and counts every item in the photo in under 3 seconds.</p>
+      <div class="tc-fconn">
+        <svg width="42" height="12" viewBox="0 0 46 12" fill="none" aria-hidden="true">
+          <path d="M0 6h38" stroke="#B9C2D1" stroke-width="1.6" stroke-dasharray="5 6" stroke-linecap="round"/>
+          <path d="M37 1.5 44 6l-7 4.5" stroke="#B9C2D1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
 
-      <div class="how-step">
-        <div class="how-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-            <polyline points="22 4 12 14.01 9 11.01"/>
-          </svg>
+      <div class="tc-fpair">
+        <div class="tc-fcard">
+          <div class="tc-flogo">
+            <img class="tc-brand" src="/assets/whatsapp-logo.png" alt="WhatsApp" width="128" height="128" loading="lazy" decoding="async">
+          </div>
+          <div class="tc-fstep">Step 2a</div>
+          <h3>Text the count</h3>
+          <p>From any phone.</p>
         </div>
-        <span class="how-step-num">3</span>
-        <h3>Confirm or adjust</h3>
-        <p>Review the count on screen. Tap "Looks right" or correct it. Your call is always logged.</p>
+
+        <div class="tc-or-wrap"><span class="tc-or">or</span></div>
+
+        <div class="tc-fcard">
+          <div class="tc-flogo">
+            <img class="tc-brand" src="/assets/terrycount-mark.png" alt="TerryCount app" width="128" height="127" loading="lazy" decoding="async">
+          </div>
+          <div class="tc-fstep">Step 2b</div>
+          <h3>Snap a photo</h3>
+          <p>Counts the shelf in ~3 sec.</p>
+        </div>
       </div>
 
-      <div class="how-step">
-        <div class="how-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/>
-          </svg>
-        </div>
-        <span class="how-step-num">4</span>
-        <h3>Spreadsheet updates</h3>
-        <p>The row writes automatically: timestamp, shelf, count. No manual entry ever.</p>
+      <div class="tc-fconn">
+        <svg width="42" height="12" viewBox="0 0 46 12" fill="none" aria-hidden="true">
+          <path d="M0 6h38" stroke="#B9C2D1" stroke-width="1.6" stroke-dasharray="5 6" stroke-linecap="round"/>
+          <path d="M37 1.5 44 6l-7 4.5" stroke="#B9C2D1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
 
+      <div class="tc-fcard is-engine">
+        <div class="tc-flogo">
+          <img class="tc-brand" src="/assets/terrycount-mark.png" alt="TerryCount" width="128" height="127" loading="lazy" decoding="async">
+        </div>
+        <div class="tc-fstep">Step 3</div>
+        <h3>TerryCount reconciles it</h3>
+        <p>Tagged, timestamped, checked against par.</p>
+        <div class="tc-ferows">
+          <div class="tc-ferow"><span class="tc-tick"><svg width="7" height="5" viewBox="0 0 10 8" fill="none" aria-hidden="true"><path d="M1 4l2.6 2.6L9 1.2" stroke="#E07038" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tc-lbl">Bath towels</span><span class="tc-num">42</span></div>
+          <div class="tc-ferow"><span class="tc-tick"><svg width="7" height="5" viewBox="0 0 10 8" fill="none" aria-hidden="true"><path d="M1 4l2.6 2.6L9 1.2" stroke="#E07038" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tc-lbl">Hand towels</span><span class="tc-num">38</span></div>
+          <div class="tc-ferow"><span class="tc-tick"><svg width="7" height="5" viewBox="0 0 10 8" fill="none" aria-hidden="true"><path d="M1 4l2.6 2.6L9 1.2" stroke="#E07038" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tc-lbl">Flat sheets</span><span class="tc-num">25</span></div>
+        </div>
+      </div>
+
+      <div class="tc-fconn">
+        <svg width="42" height="12" viewBox="0 0 46 12" fill="none" aria-hidden="true">
+          <path d="M0 6h38" stroke="#B9C2D1" stroke-width="1.6" stroke-dasharray="5 6" stroke-linecap="round"/>
+          <path d="M37 1.5 44 6l-7 4.5" stroke="#B9C2D1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="tc-fcard is-dest">
+        <div class="tc-flogo">
+          <img class="tc-brand" src="/assets/google-sheets-logo.png" alt="Google Sheets" width="94" height="128" loading="lazy" decoding="async">
+          <!-- SWAP: Excel mark intentionally omitted for now. To add it later, drop the
+               file in /assets/ and add a second tc-brand image alongside Sheets here. -->
+        </div>
+        <div class="tc-fstep">Step 4</div>
+        <h3>Lands in your spreadsheet</h3>
+        <p>Your existing sheet, updated automatically.</p>
+        <div class="tc-fmini">
+          <div class="tc-r is-head"><div>Item</div><div class="tc-n">Count</div></div>
+          <div class="tc-r"><div>Bath towels</div><div class="tc-n">42</div></div>
+          <div class="tc-r"><div>Hand towels</div><div class="tc-n">38</div></div>
+          <div class="tc-r is-hi"><div>Flat sheets</div><div class="tc-n">25</div></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
