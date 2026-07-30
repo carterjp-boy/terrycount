@@ -676,7 +676,12 @@
     @media (max-width: 1120px) {
       .tc-rail { flex-direction: column; align-items: center; }
       .tc-fconn { padding: 13px 0; transform: rotate(90deg); }
-      .tc-fcard, .tc-fcard.is-engine, .tc-fcard.is-dest { width: 280px; }
+      .tc-fcard { width: 280px; }
+      /* The dashed bracket takes the same 280px as every other node, so the stacked
+         column has one edge. Its own padding previously pushed it out to 322px, making
+         it the only block wider than the rest. Its two cards fill whatever is left. */
+      .tc-fpair { width: 280px; padding: 20px 14px 16px; }
+      .tc-fpair .tc-fcard { width: auto; }
     }
     @media (max-width: 880px) {
       .tc-cards { grid-template-columns: 1fr; gap: 16px; }
@@ -904,7 +909,8 @@
     }
 
     /* ── PRICING ── */
-    .pricing { background: #f5f0e8; }
+    /* Same #FAFAFA as .hero. */
+    .pricing { background: #FAFAFA; }
     /* Heading stacks above the tiers, matching the section rhythm used elsewhere,
        instead of sitting in a column beside a single card. */
     .pricing-head { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 48px; }
@@ -1066,15 +1072,17 @@
     footer a { color: rgba(255,255,255,0.55); }
     footer strong { color: white; }
     .waitlist-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 0; }
+    /* Padding, font-size and radius match .btn-waitlist so the two sit at the same
+       height side by side; they were 42px and 52px. */
     .linkedin-btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 18px;
+      padding: 14px 18px;
       background: #0A66C2;
       color: white !important;
-      border-radius: 8px;
-      font-size: 14px;
+      border-radius: 10px;
+      font-size: 15px;
       font-weight: 600;
       text-decoration: none;
       transition: opacity 0.15s;
@@ -1824,8 +1832,11 @@
     <div class="pricing-grid">
       <div class="pricing-card">
         <p class="pricing-name">WhatsApp Plan</p>
-        <div class="pricing-amount"><sup>$</sup>50</div>
+        <div class="pricing-amount"><sup>$</sup>49.99</div>
         <p class="pricing-period">per month, billed monthly</p>
+        <div style="display:inline-flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin-bottom:8px;font-size:13px;color:var(--muted);">
+          <span style="font-weight:600;color:var(--text);">+ $20 one-time implementation fee</span>&nbsp;paid at signup
+        </div>
         <hr class="pricing-divider" />
         <ul class="pricing-features">
           <li>
