@@ -118,12 +118,13 @@
       transition: color 0.15s;
     }
     .nav-links a:hover { color: var(--teal); }
-    /* Coral, to pull the eye ahead of the navy waitlist button beside it. Text is
-       navy rather than white: white on coral measures 3.2:1, under the 4.5:1 AA
-       floor for text this size, while navy on coral clears it at 5.3:1. */
+    /* Coral, to pull the eye ahead of the navy waitlist button beside it.
+       White on the brand coral measures 3.2:1, under the 4.5:1 AA floor for text
+       this size. Swapping the background to #B85C2E would put it at 4.56:1 while
+       still reading as the brand orange, if that matters more than the exact hue. */
     .nav-links .btn-nav-accent {
       background: var(--coral);
-      color: var(--teal-d) !important;
+      color: var(--white) !important;
       border: none;
       padding: 8px 18px;
       border-radius: 8px;
