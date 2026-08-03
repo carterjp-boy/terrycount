@@ -19,21 +19,26 @@
       function setCookie(name, value) {
         document.cookie = name + '=' + value + '; path=/; max-age=15552000; SameSite=Lax';
       }
-      var qsOverride = new URLSearchParams(location.search).get('tc_variant');
-      var isValidOverride = qsOverride === 'a' || qsOverride === 'b';
-      var cookieVariant = getCookie('tc_variant');
-      var variant = isValidOverride ? qsOverride : cookieVariant;
-      if (!variant) {
-        variant = Math.random() < 0.5 ? 'a' : 'b';
+      // Single gate for every value entering the experiment. Anything that isn't
+      // exactly "a" or "b" after trimming and lowercasing is rejected outright: an
+      // unvalidated value used to flow into both the CSS class, where "variant-B"
+      // matches no rule and the hero renders unstyled, and into GA4, where it became
+      // an extra bucket alongside A and B.
+      function normalizeVariant(v) {
+        v = (v == null ? '' : String(v)).trim().toLowerCase();
+        return (v === 'a' || v === 'b') ? v : null;
       }
-      // Only persist the sticky assignment when it wasn't a one-off ?tc_variant= override,
-      // so a preview/QA link can never reassign a real visitor's bucket.
-      if (!isValidOverride && !cookieVariant) {
+      var override = normalizeVariant(new URLSearchParams(location.search).get('tc_variant'));
+      var cookieVariant = normalizeVariant(getCookie('tc_variant'));
+      var variant = override || cookieVariant || (Math.random() < 0.5 ? 'a' : 'b');
+      // Persist a real assignment, never a preview override, and rewrite the cookie
+      // when it was absent or malformed so the visitor stops re-rolling on each visit.
+      if (!override && cookieVariant !== variant) {
         setCookie('tc_variant', variant);
       }
+      // Two forms, one source: lowercase drives the cookie and the .variant-a /
+      // .variant-b rules; uppercase is the only form ever sent to analytics.
       window.tcVariant = variant;
-      // GA4 reports on "A"/"B"; the cookie and CSS classes stay lowercase so existing
-      // buckets and .variant-a / .variant-b rules keep working.
       window.tcVariantLabel = variant.toUpperCase();
       document.documentElement.className += ' variant-' + variant;
     })();
@@ -1978,7 +1983,7 @@
   <div class="photo-demo-inner">
     <div class="photo-demo-left">
       <div class="photo-demo-header">
-        <span class="tc-pill on-dark">See It In Action</span>
+        <span class="tc-pill on-dark">See Computer Vision In Action</span>
         <h2 class="section-title">One photo. Instant count.</h2>
         <p class="section-sub" style="max-width:520px;">No spreadsheet formulas. No manual tallying. TerryCount reads the shelf and logs everything for you.</p>
       </div>
@@ -2089,7 +2094,7 @@
       </div>
 
       <div class="pricing-card is-featured">
-        <p class="pricing-name">Team Plan</p>
+        <p class="pricing-name">Full App Plan</p>
         <div class="pricing-amount"><sup>$</sup>99.99</div>
         <p class="pricing-period">per month, billed monthly</p>
         <div style="display:inline-flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin-bottom:8px;font-size:13px;color:var(--muted);">
@@ -2104,6 +2109,10 @@
           <li>
             <span class="check">&#10003;</span>
             <span>Unlimited scans and counts</span>
+          </li>
+          <li>
+            <span class="check">&#10003;</span>
+            <span>Unlimited counts texted over WhatsApp</span>
           </li>
           <li>
             <span class="check">&#10003;</span>
