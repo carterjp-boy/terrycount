@@ -118,23 +118,28 @@
       transition: color 0.15s;
     }
     .nav-links a:hover { color: var(--teal); }
-    /* Secondary to the solid waitlist CTA next to it: outlined, so the primary
-       conversion still reads as the louder of the two. */
-    .btn-nav-ghost {
-      background: transparent;
-      color: var(--teal) !important;
-      border: 1.5px solid var(--border);
-      padding: 7px 18px;
+    /* Coral, to pull the eye ahead of the navy waitlist button beside it. Text is
+       navy rather than white: white on coral measures 3.2:1, under the 4.5:1 AA
+       floor for text this size, while navy on coral clears it at 5.3:1. */
+    .nav-links .btn-nav-accent {
+      background: var(--coral);
+      color: var(--teal-d) !important;
+      border: none;
+      padding: 8px 18px;
       border-radius: 8px;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       white-space: nowrap;
-      transition: border-color 0.15s, color 0.15s;
+      transition: background 0.15s, transform 0.12s ease, box-shadow 0.15s ease;
     }
-    .btn-nav-ghost:hover { border-color: var(--teal); color: var(--teal-d) !important; }
-    .btn-nav-ghost:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
+    .nav-links .btn-nav-accent:hover {
+      background: #C85F2B;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(224,112,56,0.38);
+    }
+    .nav-links .btn-nav-accent:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
-    .btn-nav {
+    .nav-links .btn-nav {
       background: var(--teal);
       color: white !important;
       padding: 8px 20px;
@@ -145,7 +150,7 @@
       white-space: nowrap;
       transition: background 0.15s;
     }
-    .btn-nav:hover { background: var(--teal-d) !important; color: white; }
+    .nav-links .btn-nav:hover { background: var(--teal-d) !important; color: white; }
 
     /* ── HERO ── */
     .hero {
@@ -1330,9 +1335,9 @@
       /* Nav */
       /* Hide the text links on mobile, but keep both CTAs; they're shrunk below
          so the logo plus two buttons still fit a 375px bar. */
-      .nav-links a:not(.btn-nav):not(.btn-nav-ghost) { display: none; }
+      .nav-links a:not(.btn-nav):not(.btn-nav-accent) { display: none; }
       .nav-links { gap: 8px; }
-      .btn-nav, .btn-nav-ghost { padding: 7px 12px; font-size: 12.5px; }
+      .nav-links .btn-nav, .nav-links .btn-nav-accent { padding: 7px 12px; font-size: 12.5px; }
       /* 36px rather than 40px: reclaims ~13px of bar width now that two CTAs share it. */
       .logo-img { height: 36px; }
 
@@ -1375,7 +1380,7 @@
     /* Below this the logo plus both CTAs stop fitting one line at their 640px sizes. */
     @media (max-width: 400px) {
       .logo-img { height: 28px; }
-      .btn-nav, .btn-nav-ghost { padding: 6px 10px; font-size: 11.5px; }
+      .nav-links .btn-nav, .nav-links .btn-nav-accent { padding: 6px 10px; font-size: 11.5px; }
     }
     @media (max-width: 400px) {
       .btn-primary, .btn-secondary { padding: 12px 20px; font-size: 14px; }
@@ -1685,8 +1690,8 @@
     <div class="nav-links">
       <a href="#how-it-works">How it works</a>
       <a href="#pricing">Pricing</a>
-      <a data-tc-btn="nav_book_call" href="https://calendly.com/cleo_pontone-mde/30min"
-         target="_blank" rel="noopener noreferrer" class="btn-nav-ghost">Book a call</a>
+      <a data-tc-btn="nav_book_call" href="https://calendly.com/cleo_pontone-mde/15min"
+         target="_blank" rel="noopener noreferrer" class="btn-nav-accent">Book a call</a>
       <a data-tc-btn="nav" href="https://tally.so/r/rjbaEp" target="_blank" class="btn-nav">Join waitlist</a>
     </div>
   </div>
