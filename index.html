@@ -1181,10 +1181,11 @@
     /* btn-secondary carries a 1px border that btn-primary doesn't, which made the two
        tier CTAs differ by 2px in height. Trim the padding to match. */
     .pricing-card .btn-secondary { padding-top: 13px; padding-bottom: 13px; }
-    /* Only the flagship tier carries the navy outline and the corner ribbon. */
+    /* Only the flagship tier carries the navy outline and the corner ribbon.
+       Ribbon text comes from data-ribbon so both tiers can share this look. */
     .pricing-card.is-featured { border-color: var(--teal); }
     .pricing-card.is-featured::before {
-      content: 'Most popular';
+      content: attr(data-ribbon);
       position: absolute;
       top: 18px; right: -26px;
       background: var(--teal);
@@ -1194,6 +1195,17 @@
       padding: 4px 40px;
       transform: rotate(35deg);
       letter-spacing: 0.5px;
+    }
+    /* Dims a tier that isn't live yet and swaps its ribbon to a neutral tone. */
+    .pricing-card.is-comingsoon { opacity: 0.62; }
+    .pricing-card.is-comingsoon::before { background: var(--muted); }
+    .pricing-starting-at {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 2px;
     }
     .pricing-name {
       font-size: 14px;
@@ -1708,7 +1720,7 @@
 
 <!-- ANNOUNCEMENT BANNER -->
 <div class="announcement-bar">
-  Interested in providing stock photos in exchange for a discount? Email us at <a href="mailto:cleo_pontone@mde.harvard.edu">cleo_pontone@mde.harvard.edu</a>
+  Interested in providing stock photos in exchange for a discount? Email us at <a href="mailto:info@terrycount.com">info@terrycount.com</a>
 </div>
 
 <!-- HERO -->
@@ -2096,17 +2108,18 @@
   <div class="container">
     <div class="pricing-head">
       <span class="tc-pill on-panel">Pricing</span>
-      <h2 class="section-title">Simple, flat-rate pricing</h2>
-      <p class="section-sub">Two ways to count. Either one covers your whole team.</p>
+      <h2 class="section-title">Simple, transparent pricing</h2>
+      <p class="section-sub">Two ways to track your linens. Every plan covers your whole team.</p>
     </div>
 
     <div class="pricing-grid">
-      <div class="pricing-card">
-        <p class="pricing-name">WhatsApp Plan</p>
-        <div class="pricing-amount"><sup>$</sup>49.99</div>
-        <p class="pricing-period">per month, billed monthly</p>
+      <div class="pricing-card is-featured" data-ribbon="Available">
+        <p class="pricing-name">Text &amp; Voice Plan</p>
+        <p class="pricing-starting-at">Starting at</p>
+        <div class="pricing-amount"><sup>$</sup>20</div>
+        <p class="pricing-period">per month for up to 10 users, then +$2/mo per additional user</p>
         <div style="display:inline-flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin-bottom:8px;font-size:13px;color:var(--muted);">
-          <span style="font-weight:600;color:var(--text);">+ $20 one-time implementation fee</span>&nbsp;paid at signup
+          <span style="font-weight:600;color:var(--text);">+ $20 one-time set-up fee</span>&nbsp;paid at signup
         </div>
         <hr class="pricing-divider" />
         <ul class="pricing-features">
@@ -2116,7 +2129,7 @@
           </li>
           <li>
             <span class="check">&#10003;</span>
-            <span>Unlimited counts texted over WhatsApp</span>
+            <span>Text or send voice/audio notes over WhatsApp, in your team's language</span>
           </li>
           <li>
             <span class="check">&#10003;</span>
@@ -2124,11 +2137,15 @@
           </li>
           <li>
             <span class="check">&#10003;</span>
-            <span>Stock-room level tracking and Reports</span>
+            <span>Exportable analytics on linen tracking</span>
+          </li>
+          <li>
+            <span class="check">&#10003;</span>
+            <span>Admin dashboard &amp; customer support</span>
           </li>
           <li class="is-off">
             <span class="check cross">&#10007;</span>
-            <span>No photo counting or photo audit trail</span>
+            <span>No photo / computer-vision counting</span>
           </li>
         </ul>
         <a data-tc-btn="pricing_whatsapp" href="https://tally.so/r/rjbaEp" target="_blank" class="btn-secondary" style="display:block; text-align:center; width:100%;">
@@ -2137,12 +2154,12 @@
         <p class="pricing-note">No credit card required to join the waitlist. Cancel anytime after launch.</p>
       </div>
 
-      <div class="pricing-card is-featured">
-        <p class="pricing-name">Full App Plan</p>
-        <div class="pricing-amount"><sup>$</sup>99.99</div>
+      <div class="pricing-card is-featured is-comingsoon" data-ribbon="Coming soon">
+        <p class="pricing-name">Photo Plan</p>
+        <div class="pricing-amount"><sup>$</sup>70</div>
         <p class="pricing-period">per month, billed monthly</p>
         <div style="display:inline-flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin-bottom:8px;font-size:13px;color:var(--muted);">
-          <span style="font-weight:600;color:var(--text);">+ $50 one-time setup fee</span>&nbsp;paid at signup
+          <span style="font-weight:600;color:var(--text);">+ $30 one-time set-up fee</span>&nbsp;paid at signup
         </div>
         <hr class="pricing-divider" />
         <ul class="pricing-features">
@@ -2152,11 +2169,11 @@
           </li>
           <li>
             <span class="check">&#10003;</span>
-            <span>Unlimited scans and counts</span>
+            <span>Computer-vision photo counting, right from the app</span>
           </li>
           <li>
             <span class="check">&#10003;</span>
-            <span>Unlimited counts texted over WhatsApp</span>
+            <span>Also includes WhatsApp texting &amp; voice/audio notes</span>
           </li>
           <li>
             <span class="check">&#10003;</span>
@@ -2164,11 +2181,11 @@
           </li>
           <li>
             <span class="check">&#10003;</span>
-            <span>Stock-room level tracking and Reports</span>
+            <span>Exportable analytics on linen tracking</span>
           </li>
           <li>
             <span class="check">&#10003;</span>
-            <span>Photo audit trail with timestamps</span>
+            <span>Admin dashboard &amp; customer support</span>
           </li>
         </ul>
         <a data-tc-btn="pricing_team" href="https://tally.so/r/rjbaEp" target="_blank" class="btn-primary" style="display:block; text-align:center; width:100%;">
