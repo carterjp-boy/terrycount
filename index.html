@@ -448,9 +448,26 @@
     .tc-cam.is-snap .tc-flash { animation: tc-flash 0.35s ease-out; }
     @keyframes tc-flash { 0% { opacity: 0.75; } 100% { opacity: 0; } }
 
+    /* Small down-arrow between the visual and the sheet, showing data flowing
+       into the spreadsheet. A flowing dash animation on the shaft suggests
+       motion without needing to sync to the count/sync timers. */
+    .tc-demo-arrow-down {
+      display: flex;
+      justify-content: center;
+      margin: 2px 0;
+    }
+    .tc-arrow-line-v {
+      stroke-dasharray: 4.5 5;
+      animation: tc-arrow-flow-v 0.9s linear infinite;
+    }
+    @keyframes tc-arrow-flow-v { to { stroke-dashoffset: -19; } }
+    @media (prefers-reduced-motion: reduce) {
+      .tc-arrow-line-v { animation: none; }
+    }
+
     /* ── mini spreadsheet ── */
     .tc-sheet-card {
-      margin-top: 14px;
+      margin-top: 2px;
       background: var(--white);
       border: 1px solid #E6E9EF;
       border-radius: 14px;
@@ -2001,6 +2018,13 @@
               </div>
             </div>
 
+            <div class="tc-demo-arrow-down" aria-hidden="true">
+              <svg viewBox="0 0 20 30" width="20" height="26" fill="none">
+                <line class="tc-arrow-line-v" x1="10" y1="1" x2="10" y2="20" stroke="var(--teal)" stroke-width="2.25" stroke-linecap="round"/>
+                <path d="M4 15 L10 23 L16 15" stroke="var(--teal)" stroke-width="2.25" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+
             <div class="tc-sheet-card" id="tcSheetCard2">
               <div class="tc-sheet-head"><span class="tc-sheet-dot"></span> Inventory &mdash; Hotel Terry</div>
               <div class="tc-sheet-row is-header">
@@ -2050,6 +2074,13 @@
               </div>
 
               <div class="tc-flash"></div>
+            </div>
+
+            <div class="tc-demo-arrow-down" aria-hidden="true">
+              <svg viewBox="0 0 20 30" width="20" height="26" fill="none">
+                <line class="tc-arrow-line-v" x1="10" y1="1" x2="10" y2="20" stroke="var(--teal)" stroke-width="2.25" stroke-linecap="round"/>
+                <path d="M4 15 L10 23 L16 15" stroke="var(--teal)" stroke-width="2.25" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </div>
 
             <div class="tc-sheet-card" id="tcSheetCard">
