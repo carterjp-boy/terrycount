@@ -540,6 +540,132 @@
       }
       .tc-chip { transform: translate(-50%, 0) !important; }
     }
+
+    /* ── HERO STAGE: two frames (photo scan / WhatsApp text) crossfading in place ── */
+    /* Column + row are both implicit "1", so every .tc-demo child stacks in the same
+       cell instead of flowing to a new row — that's what lets them overlap without
+       either one needing position:absolute (which would drop it out of layout and
+       collapse the stage's height). */
+    .tc-hero-visual { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
+    .tc-hero-stage { display: grid; width: 100%; max-width: 520px; }
+    .tc-hero-stage .tc-demo {
+      grid-area: 1 / 1;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.98);
+      transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s;
+      pointer-events: none;
+    }
+    .tc-hero-stage .tc-demo.is-active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tc-hero-stage .tc-demo { transition: opacity 0.3s ease; transform: none; }
+    }
+
+    .tc-hero-tabs { display: flex; gap: 4px; background: var(--teal-l); padding: 4px; border-radius: 100px; }
+    .tc-hero-tab {
+      border: none;
+      background: transparent;
+      color: var(--teal-m);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+    .tc-hero-tab.is-active { background: var(--white); color: var(--text); box-shadow: 0 2px 8px rgba(28,42,71,0.14); }
+    .tc-hero-tab:not(.is-active):hover { color: var(--text); }
+
+    /* ── WhatsApp text-counting frame ── */
+    .tc-wa-phone {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #EEF1E9;
+      box-shadow: 0 24px 60px -18px rgba(28,42,71,0.35);
+      aspect-ratio: 16 / 10;
+      display: flex;
+      flex-direction: column;
+    }
+    .tc-wa-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      background: #075E54;
+      color: white;
+      flex-shrink: 0;
+    }
+    .tc-wa-avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: white;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      padding: 6px;
+    }
+    .tc-wa-avatar img { width: 100%; height: 100%; object-fit: contain; }
+    .tc-wa-head-name { font-size: 13.5px; font-weight: 700; line-height: 1.2; }
+    .tc-wa-head-sub { font-size: 11px; opacity: 0.85; line-height: 1.2; }
+    .tc-wa-body {
+      position: relative;
+      flex: 1;
+      padding: 16px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 8px;
+      overflow: hidden;
+    }
+    .tc-wa-msg {
+      max-width: 78%;
+      background: var(--white);
+      color: var(--text);
+      font-size: 13.5px;
+      line-height: 1.4;
+      padding: 8px 11px;
+      border-radius: 4px 14px 14px 14px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .tc-wa-msg.is-in { opacity: 1; transform: translateY(0); }
+    .tc-wa-msg.is-user {
+      margin-left: auto;
+      background: #DCF8C6;
+      border-radius: 14px 4px 14px 14px;
+    }
+    .tc-wa-msg-list { display: block; margin-top: 4px; color: var(--muted); }
+    .tc-wa-msg-meta {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 3px;
+      margin-top: 3px;
+      font-size: 10.5px;
+      color: #7d9c86;
+    }
+    .tc-wa-ticks { color: #9aa8a0; transition: color 0.25s ease; }
+    .tc-wa-msg.is-read .tc-wa-ticks { color: #34B7F1; }
+
+    @container (max-width: 480px) {
+      .tc-wa-msg { font-size: 12px; padding: 5px 10px; line-height: 1.3; }
+      .tc-wa-head { padding: 7px 12px; gap: 8px; }
+      .tc-wa-head-sub { display: none; }
+      .tc-wa-avatar { width: 24px; height: 24px; padding: 5px; }
+      .tc-wa-body { padding: 8px 12px 7px; gap: 4px; }
+      .tc-wa-msg-list { margin-top: 1px; display: inline; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tc-wa-msg { transition: opacity 0.3s ease; transform: none; }
+    }
     .phone-header {
       background: var(--teal);
       padding: 20px 20px 16px;
@@ -1846,54 +1972,111 @@
       </div>
     </div>
     <div class="hero-right">
-      <!-- Animated capture demo: shutter, scan sweep, detection boxes, count tick,
-           then the row landing in the sheet. Shared by both variants. -->
-      <div class="tc-demo">
-        <div class="tc-cam" id="tcCam">
-          <img class="tc-cam-photo" src="/assets/hero-before.jpg" width="1100" height="710"
-               alt="A hotel linen closet shelf stacked with folded queen sheets">
-          <!-- The detected frame, swapped in when the boxes land. Same crop as the
-               plain photo so it registers exactly. fetchpriority low so it doesn't
-               compete with the first frame, which is the LCP candidate. -->
-          <img class="tc-cam-photo tc-cam-photo-after" src="/assets/hero-after.jpg"
-               width="1100" height="710" alt="" aria-hidden="true" fetchpriority="low">
+      <div class="tc-hero-visual">
+        <!-- Two demos crossfade in the same stage: the photo-scan capture demo (kept
+             as-is) and a new WhatsApp text-counting demo. Both are separate offerings
+             that land in the same spreadsheet, so both end on the same synced row. -->
+        <div class="tc-hero-stage" id="tcHeroStage">
+          <!-- Animated capture demo: shutter, scan sweep, detection boxes, count tick,
+               then the row landing in the sheet. Shared by both variants. -->
+          <div class="tc-demo is-active" id="tcFrameCam">
+            <div class="tc-cam" id="tcCam">
+              <img class="tc-cam-photo" src="/assets/hero-before.jpg" width="1100" height="710"
+                   alt="A hotel linen closet shelf stacked with folded queen sheets">
+              <!-- The detected frame, swapped in when the boxes land. Same crop as the
+                   plain photo so it registers exactly. fetchpriority low so it doesn't
+                   compete with the first frame, which is the LCP candidate. -->
+              <img class="tc-cam-photo tc-cam-photo-after" src="/assets/hero-after.jpg"
+                   width="1100" height="710" alt="" aria-hidden="true" fetchpriority="low">
 
-          <div class="tc-corner tl"></div>
-          <div class="tc-corner tr"></div>
-          <div class="tc-corner bl"></div>
-          <div class="tc-corner br"></div>
+              <div class="tc-corner tl"></div>
+              <div class="tc-corner tr"></div>
+              <div class="tc-corner bl"></div>
+              <div class="tc-corner br"></div>
 
-          <div class="tc-status" id="tcStatus">Ready</div>
-          <div class="tc-scanline"></div>
+              <div class="tc-status" id="tcStatus">Ready</div>
+              <div class="tc-scanline"></div>
 
-          <div class="tc-bbox b1"><span class="tc-bbox-tag">queen sheet &times;21</span></div>
-          <div class="tc-bbox b2"><span class="tc-bbox-tag">queen sheet &times;19</span></div>
+              <div class="tc-bbox b1"><span class="tc-bbox-tag">queen sheet &times;21</span></div>
+              <div class="tc-bbox b2"><span class="tc-bbox-tag">queen sheet &times;19</span></div>
 
-          <div class="tc-chip">
-            <span class="tc-chip-num" id="tcDemoCount">0</span>
-            <span>queen sheets counted</span>
+              <div class="tc-chip">
+                <span class="tc-chip-num" id="tcDemoCount">0</span>
+                <span>queen sheets counted</span>
+              </div>
+
+              <div class="tc-flash"></div>
+            </div>
+
+            <div class="tc-sheet-card" id="tcSheetCard">
+              <div class="tc-sheet-head"><span class="tc-sheet-dot"></span> Inventory &mdash; Hotel Terry</div>
+              <div class="tc-sheet-row is-header">
+                <div class="col-loc">Location</div><div>Closet</div><div>Item</div><div>Qty</div><div class="col-status">Status</div>
+              </div>
+              <div class="tc-sheet-row is-live">
+                <div class="col-loc">Floor 2</div><div>Closet 2</div><div>Queen sheets</div>
+                <div class="qty">40</div><div class="col-status sync">&#10003; Synced</div>
+              </div>
+              <div class="tc-sheet-row is-old">
+                <div class="col-loc">Floor 2</div><div>Closet 2</div><div>Bath towels</div>
+                <div class="qty">62</div><div class="col-status">&mdash;</div>
+              </div>
+              <div class="tc-sheet-row is-old">
+                <div class="col-loc">Floor 1</div><div>Closet 1</div><div>Pillowcases</div>
+                <div class="qty">115</div><div class="col-status">&mdash;</div>
+              </div>
+            </div>
           </div>
 
-          <div class="tc-flash"></div>
+          <!-- WhatsApp text-counting demo: a housekeeper replies to the counting bot
+               right in the group chat, no app required, and it lands in the same sheet. -->
+          <div class="tc-demo tc-demo-wa" id="tcFrameWA">
+            <div class="tc-wa-phone">
+              <div class="tc-wa-head">
+                <span class="tc-wa-avatar"><img src="/assets/whatsapp-logo.png" alt="" width="128" height="128"></span>
+                <span>
+                  <span class="tc-wa-head-name" style="display:block;">TerryCount Bot</span>
+                  <span class="tc-wa-head-sub">Housekeeping &middot; Hotel Terry</span>
+                </span>
+              </div>
+              <div class="tc-wa-body" id="tcWaBody">
+                <div class="tc-wa-msg" id="tcWaMsg1">
+                  Which closet are you counting? Reply with a number:
+                  <span class="tc-wa-msg-list">1) Closet 1 &ndash; Floor 1 &middot; 2) Closet 2 &ndash; Floor 2</span>
+                </div>
+                <div class="tc-wa-msg is-user" id="tcWaMsg2">2</div>
+                <div class="tc-wa-msg" id="tcWaMsg3">Queen sheets &mdash; how many? Reply with a number.</div>
+                <div class="tc-wa-msg is-user" id="tcWaMsg4">
+                  40
+                  <span class="tc-wa-msg-meta">9:41 AM <span class="tc-wa-ticks" id="tcWaTicks">&#10003;&#10003;</span></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tc-sheet-card" id="tcSheetCard2">
+              <div class="tc-sheet-head"><span class="tc-sheet-dot"></span> Inventory &mdash; Hotel Terry</div>
+              <div class="tc-sheet-row is-header">
+                <div class="col-loc">Location</div><div>Closet</div><div>Item</div><div>Qty</div><div class="col-status">Status</div>
+              </div>
+              <div class="tc-sheet-row is-live">
+                <div class="col-loc">Floor 2</div><div>Closet 2</div><div>Queen sheets</div>
+                <div class="qty">40</div><div class="col-status sync">&#10003; Synced</div>
+              </div>
+              <div class="tc-sheet-row is-old">
+                <div class="col-loc">Floor 2</div><div>Closet 2</div><div>Bath towels</div>
+                <div class="qty">62</div><div class="col-status">&mdash;</div>
+              </div>
+              <div class="tc-sheet-row is-old">
+                <div class="col-loc">Floor 1</div><div>Closet 1</div><div>Pillowcases</div>
+                <div class="qty">115</div><div class="col-status">&mdash;</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="tc-sheet-card" id="tcSheetCard">
-          <div class="tc-sheet-head"><span class="tc-sheet-dot"></span> Inventory &mdash; Hotel Terry</div>
-          <div class="tc-sheet-row is-header">
-            <div class="col-loc">Location</div><div>Closet</div><div>Item</div><div>Qty</div><div class="col-status">Status</div>
-          </div>
-          <div class="tc-sheet-row is-live">
-            <div class="col-loc">Floor 2</div><div>Closet 2</div><div>Queen sheets</div>
-            <div class="qty">40</div><div class="col-status sync">&#10003; Synced</div>
-          </div>
-          <div class="tc-sheet-row is-old">
-            <div class="col-loc">Floor 2</div><div>Closet 2</div><div>Bath towels</div>
-            <div class="qty">62</div><div class="col-status">&mdash;</div>
-          </div>
-          <div class="tc-sheet-row is-old">
-            <div class="col-loc">Floor 1</div><div>Closet 1</div><div>Pillowcases</div>
-            <div class="qty">115</div><div class="col-status">&mdash;</div>
-          </div>
+        <div class="tc-hero-tabs" role="tablist" aria-label="Preview a counting method">
+          <button type="button" class="tc-hero-tab is-active" data-frame="cam" role="tab" aria-selected="true">&#128247; Photo scan</button>
+          <button type="button" class="tc-hero-tab" data-frame="wa" role="tab" aria-selected="false">&#128172; WhatsApp text</button>
         </div>
       </div>
     </div><!-- hero-right -->
@@ -2369,27 +2552,34 @@
 
   tcRenderInputs();
 
-  // ── HERO CAPTURE DEMO ──
-  // Sequence ported from terrycount-hero-demo.html. One timer, tracked on window so a
-  // re-run of this script (or a bfcache restore) replaces it rather than stacking a
-  // second copy that would fight the first over the same classes.
+  // ── HERO DEMO: two frames (photo scan / WhatsApp text) that crossfade ──
+  // Each frame owns its own animation sequence; a master rotation shows one
+  // frame at a time and (re)plays whichever sequence just became visible.
+  // Manual tab clicks override the rotation instead of fighting it.
+  // The rotation timer lives on window so a re-run of this script (or a
+  // bfcache restore) replaces it rather than stacking a second copy that
+  // would fight the first over the same classes.
   (function () {
+    const frameCam = document.getElementById('tcFrameCam');
+    const frameWa = document.getElementById('tcFrameWA');
+    const tabs = document.querySelectorAll('.tc-hero-tab');
+    if (!frameCam || !frameWa) return;
+
+    const FRAME_MS = 8500;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ── Photo-scan sequence (ported from terrycount-hero-demo.html) ──
     const cam = document.getElementById('tcCam');
     const sheetCard = document.getElementById('tcSheetCard');
     const countEl = document.getElementById('tcDemoCount');
     const statusEl = document.getElementById('tcStatus');
-    if (!cam || !sheetCard || !countEl || !statusEl) return;
+    let camTimers = [];
+    let camRaf = null;
 
-    const TC_DEMO_LOOP_MS = 8500;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let stepTimers = [];
-    let rafId = null;
-
-    function clearAll() {
-      if (window.tcDemoTimer) { clearInterval(window.tcDemoTimer); window.tcDemoTimer = null; }
-      stepTimers.forEach(clearTimeout);
-      stepTimers = [];
-      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+    function clearCam() {
+      camTimers.forEach(clearTimeout);
+      camTimers = [];
+      if (camRaf) { cancelAnimationFrame(camRaf); camRaf = null; }
     }
 
     function tickCount(to, dur) {
@@ -2399,21 +2589,17 @@
         // drive the easing negative and print a nonsense count.
         const p = Math.min(Math.max((t - start) / dur, 0), 1);
         countEl.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
-        if (p < 1) rafId = requestAnimationFrame(step);
-        else rafId = null;
+        if (p < 1) camRaf = requestAnimationFrame(step);
+        else camRaf = null;
       })(performance.now());
       // Land on the final number even where frames are throttled (backgrounded tab,
       // low-power mode); without this the chip can stick partway through the count.
-      stepTimers.push(setTimeout(function () { countEl.textContent = to; }, dur + 60));
+      camTimers.push(setTimeout(function () { countEl.textContent = to; }, dur + 60));
     }
 
-    function runSequence() {
-      // Drop any steps still pending from the previous pass, so a slow frame can't
-      // leave a stuck box or a frozen count on loop 2+.
-      stepTimers.forEach(clearTimeout);
-      stepTimers = [];
-      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-
+    function runCamSequence() {
+      if (!cam || !sheetCard || !countEl || !statusEl) return;
+      clearCam();
       cam.classList.remove('is-scanning', 'is-boxed', 'is-counted', 'is-snap');
       sheetCard.classList.remove('is-synced');
       statusEl.classList.remove('is-done');
@@ -2430,7 +2616,7 @@
         return;
       }
 
-      const at = function (ms, fn) { stepTimers.push(setTimeout(fn, ms)); };
+      const at = function (ms, fn) { camTimers.push(setTimeout(fn, ms)); };
       at(600,  function () { cam.classList.add('is-snap');     statusEl.textContent = 'Captured'; });
       at(1000, function () { cam.classList.add('is-scanning'); statusEl.textContent = 'Counting…'; });
       at(2400, function () { cam.classList.add('is-boxed'); });
@@ -2442,20 +2628,92 @@
       });
     }
 
-    function start() {
-      clearAll();
-      runSequence();
-      if (!reduced) window.tcDemoTimer = setInterval(runSequence, TC_DEMO_LOOP_MS);
+    // ── WhatsApp text-counting sequence: same closet, same item, same sheet,
+    // just typed instead of photographed — the two offerings meet in the same row. ──
+    const waMsgs = ['tcWaMsg1', 'tcWaMsg2', 'tcWaMsg3', 'tcWaMsg4'].map(function (id) {
+      return document.getElementById(id);
+    });
+    const sheetCard2 = document.getElementById('tcSheetCard2');
+    let waTimers = [];
+
+    function clearWa() {
+      waTimers.forEach(clearTimeout);
+      waTimers = [];
     }
+
+    function runWaSequence() {
+      if (waMsgs.indexOf(null) !== -1 || !sheetCard2) return;
+      clearWa();
+      waMsgs.forEach(function (m) { m.classList.remove('is-in', 'is-read'); });
+      sheetCard2.classList.remove('is-synced');
+      void sheetCard2.offsetWidth;
+
+      if (reduced) {
+        waMsgs.forEach(function (m) { m.classList.add('is-in'); });
+        waMsgs[3].classList.add('is-read');
+        sheetCard2.classList.add('is-synced');
+        return;
+      }
+
+      const at = function (ms, fn) { waTimers.push(setTimeout(fn, ms)); };
+      at(400,  function () { waMsgs[0].classList.add('is-in'); });
+      at(1300, function () { waMsgs[1].classList.add('is-in'); });
+      at(2000, function () { waMsgs[2].classList.add('is-in'); });
+      at(2900, function () { waMsgs[3].classList.add('is-in'); });
+      at(3500, function () { waMsgs[3].classList.add('is-read'); });
+      at(3900, function () { sheetCard2.classList.add('is-synced'); });
+    }
+
+    // ── Frame switching + auto-rotation ──
+    let active = 'cam';
+
+    function showFrame(name) {
+      active = name;
+      frameCam.classList.toggle('is-active', name === 'cam');
+      frameWa.classList.toggle('is-active', name === 'wa');
+      tabs.forEach(function (btn) {
+        const isActive = btn.getAttribute('data-frame') === name;
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      if (name === 'cam') { clearWa(); runCamSequence(); }
+      else { clearCam(); runWaSequence(); }
+    }
+
+    function startRotation() {
+      if (window.tcHeroTimer) clearInterval(window.tcHeroTimer);
+      window.tcHeroTimer = setInterval(function () {
+        showFrame(active === 'cam' ? 'wa' : 'cam');
+      }, FRAME_MS);
+    }
+
+    function stopAll() {
+      if (window.tcHeroTimer) { clearInterval(window.tcHeroTimer); window.tcHeroTimer = null; }
+      clearCam();
+      clearWa();
+    }
+
+    function start() {
+      stopAll();
+      showFrame(active);
+      startRotation();
+    }
+
+    tabs.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        showFrame(btn.getAttribute('data-frame'));
+        startRotation(); // restart the clock so a manual pick doesn't immediately flip back
+      });
+    });
 
     start();
     // Don't burn loops while the tab is backgrounded, and don't leave a timer behind
     // when the page is bfcached on navigation.
     document.addEventListener('visibilitychange', function () {
-      if (document.hidden) clearAll();
-      else if (!window.tcDemoTimer) start();
+      if (document.hidden) stopAll();
+      else if (!window.tcHeroTimer) start();
     });
-    window.addEventListener('pagehide', clearAll);
+    window.addEventListener('pagehide', stopAll);
     window.addEventListener('pageshow', function (e) { if (e.persisted) start(); });
   })();
 </script>
