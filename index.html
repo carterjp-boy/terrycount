@@ -1496,7 +1496,16 @@
       .hero-meet { font-size: clamp(18px, 5vw, 28px); }
       .hero p { font-size: 15px; margin-bottom: 28px; }
       .hero-specs { justify-content: center; }
-      .hero-ctas { justify-content: center; }
+      /* Side by side even on narrow phones, so the visual sits higher on the page. */
+      .hero-ctas { justify-content: center; flex-wrap: nowrap; gap: 10px; }
+      .hero-ctas .btn-primary, .hero-ctas .btn-secondary {
+        flex: 1 1 0;
+        min-width: 0;
+        padding-left: 14px;
+        padding-right: 14px;
+        white-space: normal;
+        text-align: center;
+      }
       .hero-right { justify-content: center; }
       /* Variant B stacks calculator first (headline, subhead, inputs/results), with the
          before/after visual below it — source order, so no `order` override is needed. */
@@ -1531,24 +1540,8 @@
     }
     @media (max-width: 400px) {
       .btn-primary, .btn-secondary { padding: 12px 20px; font-size: 14px; }
+      .hero-ctas .btn-primary, .hero-ctas .btn-secondary { padding: 12px 10px; font-size: 13px; }
     }
-  
-    /* Announcement bar */
-    .announcement-bar {
-      background: var(--coral);
-      color: white;
-      text-align: center;
-      padding: 10px 20px;
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 1.4;
-    }
-    .announcement-bar a {
-      color: white;
-      font-weight: 700;
-      text-decoration: underline;
-    }
-    .announcement-bar a:hover { opacity: 0.85; }
 
     /* ── A/B VARIANT TOGGLE ── */
     /* Both variants render server-side identical HTML; only display is switched. */
@@ -1844,11 +1837,6 @@
   </div>
 </nav>
 
-<!-- ANNOUNCEMENT BANNER -->
-<div class="announcement-bar">
-  Interested in providing stock photos in exchange for a discount? Email us at <a href="mailto:info@terrycount.com">info@terrycount.com</a>
-</div>
-
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
@@ -1967,7 +1955,12 @@
         <span class="hero-spec-divider"></span>
         <span class="hero-spec">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          Unlimited closets &amp; shelves
+          Unlimited closets
+        </span>
+        <span class="hero-spec-divider"></span>
+        <span class="hero-spec">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20 15.3 15.3 0 010-20z"/></svg>
+          Multilingual
         </span>
       </div>
     </div>
@@ -1977,9 +1970,55 @@
              as-is) and a new WhatsApp text-counting demo. Both are separate offerings
              that land in the same spreadsheet, so both end on the same synced row. -->
         <div class="tc-hero-stage" id="tcHeroStage">
+          <!-- WhatsApp text-counting demo: a housekeeper replies to the counting bot
+               right in the group chat, no app required, and it lands in the same sheet.
+               Shown first: it's the more broadly available offering. -->
+          <div class="tc-demo tc-demo-wa is-active" id="tcFrameWA">
+            <div class="tc-wa-phone">
+              <div class="tc-wa-head">
+                <span class="tc-wa-avatar"><img src="/assets/whatsapp-logo.png" alt="" width="128" height="128"></span>
+                <span>
+                  <span class="tc-wa-head-name" style="display:block;">TerryCount Bot</span>
+                  <span class="tc-wa-head-sub">Housekeeping &middot; Hotel Terry</span>
+                </span>
+              </div>
+              <div class="tc-wa-body" id="tcWaBody">
+                <div class="tc-wa-msg" id="tcWaMsg1">
+                  Which closet are you counting? Reply with a number:
+                  <span class="tc-wa-msg-list">1) Closet 1 &ndash; Floor 1 &middot; 2) Closet 2 &ndash; Floor 2</span>
+                </div>
+                <div class="tc-wa-msg is-user" id="tcWaMsg2">2</div>
+                <div class="tc-wa-msg" id="tcWaMsg3">Queen sheets &mdash; how many? Reply with a number.</div>
+                <div class="tc-wa-msg is-user" id="tcWaMsg4">
+                  40
+                  <span class="tc-wa-msg-meta">9:41 AM <span class="tc-wa-ticks" id="tcWaTicks">&#10003;&#10003;</span></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tc-sheet-card" id="tcSheetCard2">
+              <div class="tc-sheet-head"><span class="tc-sheet-dot"></span> Inventory &mdash; Hotel Terry</div>
+              <div class="tc-sheet-row is-header">
+                <div class="col-loc">Location</div><div>Closet</div><div>Item</div><div>Qty</div><div class="col-status">Status</div>
+              </div>
+              <div class="tc-sheet-row is-live">
+                <div class="col-loc">Floor 2</div><div>Closet 2</div><div>Queen sheets</div>
+                <div class="qty">40</div><div class="col-status sync">&#10003; Synced</div>
+              </div>
+              <div class="tc-sheet-row is-old">
+                <div class="col-loc">Floor 2</div><div>Closet 2</div><div>Bath towels</div>
+                <div class="qty">62</div><div class="col-status">&mdash;</div>
+              </div>
+              <div class="tc-sheet-row is-old">
+                <div class="col-loc">Floor 1</div><div>Closet 1</div><div>Pillowcases</div>
+                <div class="qty">115</div><div class="col-status">&mdash;</div>
+              </div>
+            </div>
+          </div>
+
           <!-- Animated capture demo: shutter, scan sweep, detection boxes, count tick,
                then the row landing in the sheet. Shared by both variants. -->
-          <div class="tc-demo is-active" id="tcFrameCam">
+          <div class="tc-demo" id="tcFrameCam">
             <div class="tc-cam" id="tcCam">
               <img class="tc-cam-photo" src="/assets/hero-before.jpg" width="1100" height="710"
                    alt="A hotel linen closet shelf stacked with folded queen sheets">
@@ -2027,56 +2066,11 @@
               </div>
             </div>
           </div>
-
-          <!-- WhatsApp text-counting demo: a housekeeper replies to the counting bot
-               right in the group chat, no app required, and it lands in the same sheet. -->
-          <div class="tc-demo tc-demo-wa" id="tcFrameWA">
-            <div class="tc-wa-phone">
-              <div class="tc-wa-head">
-                <span class="tc-wa-avatar"><img src="/assets/whatsapp-logo.png" alt="" width="128" height="128"></span>
-                <span>
-                  <span class="tc-wa-head-name" style="display:block;">TerryCount Bot</span>
-                  <span class="tc-wa-head-sub">Housekeeping &middot; Hotel Terry</span>
-                </span>
-              </div>
-              <div class="tc-wa-body" id="tcWaBody">
-                <div class="tc-wa-msg" id="tcWaMsg1">
-                  Which closet are you counting? Reply with a number:
-                  <span class="tc-wa-msg-list">1) Closet 1 &ndash; Floor 1 &middot; 2) Closet 2 &ndash; Floor 2</span>
-                </div>
-                <div class="tc-wa-msg is-user" id="tcWaMsg2">2</div>
-                <div class="tc-wa-msg" id="tcWaMsg3">Queen sheets &mdash; how many? Reply with a number.</div>
-                <div class="tc-wa-msg is-user" id="tcWaMsg4">
-                  40
-                  <span class="tc-wa-msg-meta">9:41 AM <span class="tc-wa-ticks" id="tcWaTicks">&#10003;&#10003;</span></span>
-                </div>
-              </div>
-            </div>
-
-            <div class="tc-sheet-card" id="tcSheetCard2">
-              <div class="tc-sheet-head"><span class="tc-sheet-dot"></span> Inventory &mdash; Hotel Terry</div>
-              <div class="tc-sheet-row is-header">
-                <div class="col-loc">Location</div><div>Closet</div><div>Item</div><div>Qty</div><div class="col-status">Status</div>
-              </div>
-              <div class="tc-sheet-row is-live">
-                <div class="col-loc">Floor 2</div><div>Closet 2</div><div>Queen sheets</div>
-                <div class="qty">40</div><div class="col-status sync">&#10003; Synced</div>
-              </div>
-              <div class="tc-sheet-row is-old">
-                <div class="col-loc">Floor 2</div><div>Closet 2</div><div>Bath towels</div>
-                <div class="qty">62</div><div class="col-status">&mdash;</div>
-              </div>
-              <div class="tc-sheet-row is-old">
-                <div class="col-loc">Floor 1</div><div>Closet 1</div><div>Pillowcases</div>
-                <div class="qty">115</div><div class="col-status">&mdash;</div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="tc-hero-tabs" role="tablist" aria-label="Preview a counting method">
-          <button type="button" class="tc-hero-tab is-active" data-frame="cam" role="tab" aria-selected="true">&#128247; Photo scan</button>
-          <button type="button" class="tc-hero-tab" data-frame="wa" role="tab" aria-selected="false">&#128172; WhatsApp text</button>
+          <button type="button" class="tc-hero-tab is-active" data-frame="wa" role="tab" aria-selected="true">&#128172; WhatsApp text</button>
+          <button type="button" class="tc-hero-tab" data-frame="cam" role="tab" aria-selected="false">&#128247; Photo scan</button>
         </div>
       </div>
     </div><!-- hero-right -->
@@ -2665,7 +2659,7 @@
     }
 
     // ── Frame switching + auto-rotation ──
-    let active = 'cam';
+    let active = 'wa';
 
     function showFrame(name) {
       active = name;
