@@ -1495,7 +1495,10 @@
       .hero h1 { letter-spacing: -1px; font-size: clamp(28px, 8vw, 42px); }
       .hero-meet { font-size: clamp(18px, 5vw, 28px); }
       .hero p { font-size: 15px; margin-bottom: 28px; }
-      .hero-specs { justify-content: center; }
+      /* One line, smaller gaps/font so all three specs fit narrow phones. */
+      .hero-specs { justify-content: center; flex-wrap: nowrap; gap: 8px; }
+      .hero-spec { font-size: 11px; gap: 4px; white-space: nowrap; }
+      .hero-spec svg { flex-shrink: 0; }
       /* Side by side even on narrow phones, so the visual sits higher on the page. */
       .hero-ctas { justify-content: center; flex-wrap: nowrap; gap: 10px; }
       .hero-ctas .btn-primary, .hero-ctas .btn-secondary {
@@ -1503,9 +1506,11 @@
         min-width: 0;
         padding-left: 14px;
         padding-right: 14px;
-        white-space: normal;
+        white-space: nowrap;
         text-align: center;
       }
+      /* Trim the primary CTA to "Join the waitlist" on mobile so it stays one line. */
+      .cta-suffix { display: none; }
       .hero-right { justify-content: center; }
       /* Variant B stacks calculator first (headline, subhead, inputs/results), with the
          before/after visual below it — source order, so no `order` override is needed. */
@@ -1854,7 +1859,7 @@
       <h2 class="tc-hero-headline-b" id="tcHeroHeadlineB">How much are your linen closets <em>costing</em> you?</h2>
       <p class="tc-hero-subhead-b" id="tcHeroSubheadB">Tell us how your team counts linen today and we'll calculate.</p>
       <div class="hero-ctas">
-        <a data-tc-btn="hero" href="https://tally.so/r/rjbaEp" target="_blank" class="btn-primary">Join the waitlist, it's free</a>
+        <a data-tc-btn="hero" href="https://tally.so/r/rjbaEp" target="_blank" class="btn-primary">Join the waitlist<span class="cta-suffix">, it's free</span></a>
         <a href="#how-it-works" class="btn-secondary">See how it works</a>
       </div>
 
